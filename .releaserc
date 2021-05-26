@@ -1,0 +1,24 @@
+plugins:
+  - - "@semantic-release/commit-analyzer"
+    - releaseRules:
+        - { type: doc, scope: README, release: patch }
+        - { type: fix, release: patch }
+        - { type: chore, release: patch }
+        - { type: refactor, release: patch }
+        - { type: feat, release: minor }
+        - { type: ci, release: false }
+        - { type: style, release: false }
+      parserOpts:
+        noteKeywords:
+          - MAJOR RELEASE
+  - "@semantic-release/release-notes-generator"
+  - - "@semantic-release/github"
+    - assets:
+      - path: ./bin/konfig-manager_linux-amd64
+        name: konfig-manager_linux-amd64
+      - path: ./bin/konfig-manager_linux-arm64
+        name: konfig-manager_linux-arm64
+      - path: ./bin/konfig-manager_darwin-amd64
+        name: konfig-manager_darwin-amd64
+      - path: ./bin/konfig-manager_darwin-arm64
+        name: konfig-manager_darwin-arm64

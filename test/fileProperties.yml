@@ -1,0 +1,20 @@
+apiVersion: v1
+data:
+  application.properties: |
+    some-key=new-value
+    new-key=diff-value
+kind: ConfigMap
+metadata:
+  name: sample
+  namespace: default
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-defaults-spring
+  namespace: default
+data:
+  logging.level.org.springframework.web: INFO
+  logging.level.org.springframework: DEBUG
+  some-key: "value-from-spring"
