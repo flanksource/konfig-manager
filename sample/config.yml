@@ -1,0 +1,15 @@
+hierarchy:
+  - name: "spring-defaults-{{.}}"
+    namespace: default
+    kind: ConfigMap
+  - name: temp
+    namespace: default
+    kind: ConfigMap
+  - name: sample
+    namespace: default
+    kind: ConfigMap
+    type: File
+    key: application.properties
+  - name: test
+    namespace: default
+    kind: Secret

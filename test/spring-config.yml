@@ -1,0 +1,7 @@
+hierarchy:
+  - name: "spring-defaults-{{.}}"
+    namespace: default
+    kind: ConfigMap
+  - name: temp
+    namespace: default
+    kind: ConfigMap

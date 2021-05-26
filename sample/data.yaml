@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-defaults-quarkus
+  namespace: default
+data:
+  quarkus-key: quarkus-value
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-defaults-spring
+  namespace: default
+data:
+  logging.level.org.springframework.web: INFO
+  logging.level.org.springframework: DEBUG
+  log4j.logger.org.springframework: DEBUG
+  spring.jackson.serialization-inclusion: non_null
+  spring.datasource.maxActive: "20"
+  spring.datasource.maxIdle: "20"
+  spring.datasource.minIdle: "10"
+  spring.datasource.initialSize: "10"
+  spring.datasource.maxWait: "20000"
+  spring.aop.proxy-target-class: "true"
+  server.compression.enabled: "true"
+  server.compression.mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+  server.compression.min-response-size: "1024"
+  IS_HEADER_SET_ENABLED: "true"
+  hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: "20000000"
+  hystrix.command.default.circuitBreaker.requestVolumeThreshold: "20"
+  hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds: "5000"
+  X-Content-Type: nosniff
+  Pragma: no-cache
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: no-referrer-when-downgrade
+  showDetailWARNINGMsg: "OFF"
+  # generic logging gets appended below
+  http.connect_timeout: "5000"
+  http.request_timeout: "180000"
+  http.socket_timeout: "120000"
+  http.max_connection: "25"
+  http.default_max_per_route: "25"
+  http.max_per_route: "10"
+  http.configapply: "Y"
+  http.host: localhost
+  http.addInterceptor: "N"
+  http.thread.cron.expression: 0/30 0 * * * ?
+  spring.main.show_banner: "false"
+  allowedRefererHost: ALL
+  X-XSS-Protection: "1; mode: block"
+  Strict-Transport-Security: 'max-age: "31536000; includeSubDomains"'
+  ##resttemplate.timeout.read: "30000"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: temp
+  namespace: default
+data:
+  config-key: some-value
+  spring.main.show_banner: "true"
+
+---
+apiVersion: v1
+data:
+  application.properties: |
+    some-key=new-value
+    new-key=diff-value
+kind: ConfigMap
+metadata:
+  name: sample
+  namespace: default
+
+---
+apiVersion: v1
+data:
+  secret-key: c29tZS12YWx1ZQ==
+kind: Secret
+metadata:
+  name: test
+  namespace: default
+type: Opaque

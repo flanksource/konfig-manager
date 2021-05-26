@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-defaults-spring
+  namespace: default
+data:
+  logging.level.org.springframework.web: INFO
+  logging.level.org.springframework: DEBUG
+  log4j.logger.org.springframework: DEBUG
+  spring.jackson.serialization-inclusion: non_null
+  spring.datasource.maxActive: "20"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: temp
+  namespace: default
+data:
+  config-key: some-value
+  spring.main.show_banner: "true"
+  spring.datasource.maxActive: "40"
