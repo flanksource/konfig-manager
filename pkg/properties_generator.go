@@ -71,15 +71,13 @@ func GenerateProperties(buf []byte, applicationNames []string, config, output st
 		return err
 	}
 	for _, name := range applicationNames {
-		hierarchyItems, err := getHierarchyItems(config, name)
+		hierarchy, err := getHierarchy(config, name)
 		if err != nil {
 			return err
 		}
 		inputStruct := Input{
-			Resources: resources,
-			Hierarchy: Hierarchy{
-				Items: hierarchyItems,
-			},
+			Resources:    resources,
+			Config:       hierarchy,
 			Applications: applicationNames,
 		}
 		err = generatePropertiesForApp(inputStruct, output, name)
