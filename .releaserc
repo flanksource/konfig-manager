@@ -22,3 +22,5 @@ plugins:
         name: konfig-manager_darwin-amd64
       - path: ./bin/konfig-manager_darwin-arm64
         name: konfig-manager_darwin-arm64
+branches:
+  - main
