@@ -1,6 +1,11 @@
 package pkg
 
-import "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+import (
+	"strings"
+
+	"github.com/hairyhenderson/gomplate/v3/base64"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+)
 
 type Input struct {
 	// list of environments where config can be applied
@@ -17,6 +22,55 @@ type Resource struct {
 	Path string
 	// A configmap, secret or sealed secret
 	Item *unstructured.Unstructured
+	// A type of resource that resource holds either native or properties from file
+	Hieratchy Item
+}
+
+type ResourceType string
+
+const (
+	ResourceTypeNative     ResourceType = "native"
+	ResourceTypeProperties ResourceType = "properties"
+)
+
+func (r Resource) GetPropertiesMap() map[string]string {
+	if r.Hieratchy.Type == ResourceTypeProperties {
+		return r.GeneratePropertesMapFromProperties()
+	}
+	return r.GeneratePropertiesMapFromNative()
+}
+
+func (r Resource) GeneratePropertesMapFromProperties() map[string]string {
+	var propertiesMap = make(map[string]string)
+	prop := r.Item.Object["data"].(map[string]interface{})[r.Hieratchy.Key].(string)
+	for _, keyValue := range strings.Split(prop, "\n") {
+		propKeyValue := strings.Split(keyValue, "=")
+		if len(propKeyValue) == 2 {
+			propKey := propKeyValue[0]
+			propValue := propKeyValue[1]
+			propertiesMap[propKey] = propValue
+		}
+	}
+	return propertiesMap
+}
+
+func (r Resource) GeneratePropertiesMapFromNative() map[string]string {
+	var propertiesMap = make(map[string]string)
+	data, ok, err := unstructured.NestedMap(r.Item.Object, "data")
+	if !ok || err != nil {
+		return nil
+	}
+	if r.Item.GetKind() == "Secret" {
+		for prop, value := range data {
+			val, _ := base64.Decode(value.(string))
+			propertiesMap[prop] = string(val)
+		}
+	} else {
+		for prop, value := range data {
+			propertiesMap[prop] = value.(string)
+		}
+	}
+	return propertiesMap
 }
 
 type Config struct {
@@ -27,6 +81,6 @@ type Item struct {
 	Kind      string
 	Name      string
 	Namespace string
-	Type      string
+	Type      ResourceType
 	Key       string
 }

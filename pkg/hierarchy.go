@@ -6,32 +6,30 @@ import (
 	"text/template"
 
 	"gopkg.in/yaml.v3"
-
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-func getObjectsFromHierarchy(input Input) map[*unstructured.Unstructured]string {
-	var objs = make(map[*unstructured.Unstructured]string)
-	for _, item := range input.Config.Hierarchy {
-		key, value := getResourceFromHierarchy(input.Resources, item)
-		objs[key] = value
+func getObjectsFromHierarchy(config Config, resources []Resource) []Resource {
+	var objs []Resource
+	for _, item := range config.Hierarchy {
+		resource := getResourceFromHierarchy(resources, item)
+		if resource == nil {
+			continue
+		}
+		resource.Hieratchy = item
+		objs = append(objs, *resource)
 	}
 	return objs
 }
 
-func getResourceFromHierarchy(resources []Resource, item Item) (*unstructured.Unstructured, string) {
+func getResourceFromHierarchy(resources []Resource, item Item) *Resource {
 	for _, resource := range resources {
 		if resource.Item.GetKind() == item.Kind &&
 			resource.Item.GetName() == item.Name &&
 			resource.Item.GetNamespace() == item.Namespace {
-			if item.Type == "file" || item.Type == "File" {
-				return resource.Item, item.Key
-			}
-			return resource.Item, "data"
+			return &resource
 		}
 	}
-
-	return nil, ""
+	return nil
 }
 
 func getHierarchy(configFile, applicationName string) (Config, error) {

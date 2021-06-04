@@ -2,7 +2,7 @@ hierarchy:
   - name: sample
     namespace: default
     kind: ConfigMap
-    type: File
+    type: properties
     key: application.properties
   - name: "spring-defaults-{{.}}"
     namespace: default

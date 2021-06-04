@@ -103,13 +103,11 @@ func main() {
 }
 
 func TestHierarchyMergeWithInputFile(test *console.TestResults, input testInput) error {
-	config := "test/spring-config.yml"
-	data := "test/spring.yml"
 	_ = os.Mkdir(outputDir, 0755)
 	defer os.RemoveAll(outputDir)
 	name := "testHierarchyMergeWithInputFile"
 	application := "spring"
-	command := fmt.Sprintf("%v generate -c %v -i %v -A %v -o %v", konfigManager, config, data, application, outputDir)
+	command := fmt.Sprintf("%v generate -c %v -i %v -A %v -o %v", konfigManager, input.config, input.data, application, outputDir)
 	if err := exec.Exec(command); err != nil {
 		return err
 	}

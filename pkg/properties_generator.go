@@ -6,34 +6,40 @@ import (
 	"strings"
 
 	"github.com/flanksource/kommons/kustomize"
-	"github.com/hairyhenderson/gomplate/v3/base64"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-func generatePropertiesForApp(input Input, output, applicationName string) error {
-	itemsMap := getObjectsFromHierarchy(input)
-	propertiesMap := make(map[string]interface{})
-	var properties string
-	for item, key := range itemsMap {
-		if key != "data" {
-			properties = properties + item.Object["data"].(map[string]interface{})[key].(string)
-		} else {
-			data, bool, err := unstructured.NestedMap(item.Object, "data")
-			if !bool || err != nil {
-				return err
-			}
-			if item.GetKind() == "Secret" {
-				for prop, value := range data {
-					val, _ := base64.Decode(value.(string))
-					propertiesMap[prop] = string(val)
-				}
-			} else {
-				for prop, value := range data {
-					propertiesMap[prop] = value
-				}
-			}
+func generatePropertiesForApp(config Config, resources []Resource) map[string]string {
+	objects := getObjectsFromHierarchy(config, resources)
+	propertiesMap := make(map[string]string)
+	propertiesMapList := make([]map[string]string, 50)
+	for _, resource := range objects {
+		propertiesMapList = append(propertiesMapList, resource.GetPropertiesMap())
+	}
+	for _, propMap := range propertiesMapList {
+		for key, value := range propMap {
+			propertiesMap[key] = value
 		}
 	}
+	return propertiesMap
+}
+
+func getResources(buf []byte) ([]Resource, error) {
+	resources, err := kustomize.GetUnstructuredObjects(buf)
+	if err != nil {
+		return nil, err
+	}
+	var inputResources []Resource
+	for _, resource := range resources {
+		inputResources = append(inputResources, Resource{
+			Item: resource.(*unstructured.Unstructured),
+		})
+	}
+	return inputResources, nil
+}
+
+func createPropetiesFile(propertiesMap map[string]string, output, applicationName string) error {
+	var properties string
 	for prop, value := range propertiesMap {
 		properties = properties + fmt.Sprintf("%v=%v\n", prop, value)
 	}
@@ -51,20 +57,6 @@ func generatePropertiesForApp(input Input, output, applicationName string) error
 	return nil
 }
 
-func getResources(buf []byte) ([]Resource, error) {
-	resources, err := kustomize.GetUnstructuredObjects(buf)
-	if err != nil {
-		return nil, err
-	}
-	var inputResources []Resource
-	for _, resource := range resources {
-		inputResources = append(inputResources, Resource{
-			Item: resource.(*unstructured.Unstructured),
-		})
-	}
-	return inputResources, nil
-}
-
 func GenerateProperties(buf []byte, applicationNames []string, config, output string) error {
 	resources, err := getResources(buf)
 	if err != nil {
@@ -75,12 +67,8 @@ func GenerateProperties(buf []byte, applicationNames []string, config, output st
 		if err != nil {
 			return err
 		}
-		inputStruct := Input{
-			Resources:    resources,
-			Config:       hierarchy,
-			Applications: applicationNames,
-		}
-		err = generatePropertiesForApp(inputStruct, output, name)
+		propertiesMap := generatePropertiesForApp(hierarchy, resources)
+		err = createPropetiesFile(propertiesMap, output, name)
 		if err != nil {
 			return err
 		}
