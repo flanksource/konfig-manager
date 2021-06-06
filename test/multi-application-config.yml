@@ -8,7 +8,7 @@ hierarchy:
   - name: sample
     namespace: default
     kind: ConfigMap
-    type: File
+    type: properties
     key: application.properties
   - name: test
     namespace: default

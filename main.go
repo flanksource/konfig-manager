@@ -17,21 +17,28 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/flanksource/commons/logger"
 	"github.com/flanksource/konfig-manager/cmd"
 	"github.com/spf13/cobra"
 )
 
 var version = "dev"
+var logLevel int
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+// root represents the base command when called without any subcommands
+var root = &cobra.Command{
 	Use:   "konfig-manager",
 	Short: "konfig-manager is responsible for managing configs based on hierarchy provided in the config file",
 }
 
 func main() {
-	rootCmd.AddCommand(cmd.GenerateCmd)
-	rootCmd.AddCommand(&cobra.Command{
+	root.PersistentFlags().CountVarP(&logLevel, "loglevel", "v", "Increase logging level")
+	root.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		logger.StandardLogger().SetLogLevel((logLevel))
+	}
+	root.AddCommand(cmd.GenerateCmd)
+	root.AddCommand(cmd.Server)
+	root.AddCommand(&cobra.Command{
 		Use:   "version",
 		Short: "Print the version of konfig-manager",
 		Args:  cobra.MinimumNArgs(0),
@@ -39,9 +46,9 @@ func main() {
 			fmt.Println(version)
 		},
 	})
-	rootCmd.SetUsageTemplate(rootCmd.UsageTemplate() + fmt.Sprintf("\nversion: %s\n ", version))
+	root.SetUsageTemplate(root.UsageTemplate() + fmt.Sprintf("\nversion: %s\n ", version))
 
-	if err := rootCmd.Execute(); err != nil {
+	if err := root.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
