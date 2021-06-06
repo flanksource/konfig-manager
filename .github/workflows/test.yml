@@ -20,5 +20,5 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Run e2e Tests
-        run: make e2e-tests
+      - name: Test
+        run: make build test

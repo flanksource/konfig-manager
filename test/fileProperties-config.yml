@@ -4,6 +4,6 @@ hierarchy:
     kind: ConfigMap
     type: properties
     key: application.properties
-  - name: "spring-defaults-{{.}}"
+  - name: "spring-defaults-{{.name}}"
     namespace: default
     kind: ConfigMap
