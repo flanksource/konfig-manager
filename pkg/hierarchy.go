@@ -1,63 +1,124 @@
 package pkg
 
 import (
-	"bytes"
+	"fmt"
 	"io/ioutil"
-	"text/template"
+	"sort"
 
+	"github.com/flanksource/commons/logger"
+	"github.com/flanksource/commons/text"
+	"github.com/flanksource/kommons"
 	"gopkg.in/yaml.v3"
 )
 
-func getObjectsFromHierarchy(config Config, resources []Resource) []Resource {
-	var objs []Resource
-	for _, item := range config.Hierarchy {
-		resource := getResourceFromHierarchy(resources, item)
-		if resource == nil {
-			continue
-		}
-		resource.Hieratchy = item
-		objs = append(objs, *resource)
-	}
-	return objs
+type Config struct {
+	Hierarchy []Item
 }
 
-func getResourceFromHierarchy(resources []Resource, item Item) *Resource {
+type Item struct {
+	Kind      string
+	Name      string
+	Namespace string
+	Type      ResourceType
+	Key       string
+	Index     int
+}
+
+func (item Item) String() string {
+	s := fmt.Sprintf("%s/%s", item.Kind, item.Name)
+	if item.Key != "" {
+		s += fmt.Sprintf("[%s]", item.Key)
+	}
+	return s
+}
+
+func (item Item) FindIn(resources []Resource) *Resource {
 	for _, resource := range resources {
 		if resource.Item.GetKind() == item.Kind &&
 			resource.Item.GetName() == item.Name &&
-			resource.Item.GetNamespace() == item.Namespace {
+			(item.Namespace == "" || item.Namespace == resource.Item.GetNamespace()) {
 			return &resource
 		}
 	}
 	return nil
 }
 
-func getHierarchy(configFile, applicationName string) (Config, error) {
+func (config Config) GetPropertiesMap(resources []Resource) map[string]string {
+	propertiesMap := make(map[string]string)
+	for _, property := range config.GetProperties(resources) {
+		propertiesMap[property.Key] = property.Value
+	}
+	return propertiesMap
+}
+
+func (config Config) GetProperties(resources []Resource) map[string]Property {
+	propertiesMap := make(map[string]Property)
+	for _, resource := range config.WalkHierarchy(resources) {
+		for _, v := range resource.GetProperties() {
+			propertiesMap[v.Key] = v
+		}
+	}
+	return propertiesMap
+}
+
+func (config Config) GeneratePropertiesFile(resources []Resource) string {
+	var properties string
+	var bySection = make(map[Item]Properties)
+	for _, v := range config.GetProperties(resources) {
+		if _, ok := bySection[v.Resource.Hierarchy]; !ok {
+			bySection[v.Resource.Hierarchy] = Properties{}
+		}
+		bySection[v.Resource.Hierarchy] = append(bySection[v.Resource.Hierarchy], v)
+	}
+
+	for _, item := range config.Hierarchy {
+		list := bySection[item]
+		sort.Sort(list)
+		if len(list) == 0 {
+			continue
+		}
+		properties += fmt.Sprintf("#\n# %s\n#\n", item.String())
+		for _, property := range list {
+			properties += fmt.Sprintf("%v=%v\n", property.Key, property.Value)
+		}
+	}
+
+	return properties
+}
+
+func (config Config) WalkHierarchy(resources []Resource) []Resource {
+	var objs []Resource
+	for _, item := range config.Hierarchy {
+		logger.Tracef("[%s] finding in %d resources", item, len(resources))
+		resource := item.FindIn(resources)
+		if resource == nil {
+			continue
+		}
+		logger.Infof("[%s] found %s", item, kommons.GetName(resource.Item))
+		resource.Hierarchy = item
+		objs = append(objs, *resource)
+	}
+	return objs
+}
+
+func GetHierarchy(configFile, applicationName string) (Config, error) {
+	logger.Infof("[%s] getting hierarchy for %s", configFile, applicationName)
 	buf, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return Config{}, err
 	}
 	var config Config
-	data, err := templateHierarchy(applicationName, string(buf))
+	data, err := text.Template(string(buf), map[string]string{"name": applicationName})
+	logger.Tracef(data)
 	if err != nil {
 		return Config{}, err
 	}
-	err = yaml.Unmarshal(data, &config)
+	err = yaml.Unmarshal([]byte(data), &config)
 	if err != nil {
 		return Config{}, err
+	}
+	for i := range config.Hierarchy {
+		config.Hierarchy[i].Index = i + 1
 	}
 	return config, nil
-}
-
-func templateHierarchy(name, data string) ([]byte, error) {
-	t, err := template.New("hierarchy").Parse(data)
-	if err != nil {
-		return []byte(""), err
-	}
-	var buf bytes.Buffer
-	err = t.Execute(&buf, name)
-	if err != nil {
-		return []byte(""), err
-	}
-	return buf.Bytes(), nil
 }

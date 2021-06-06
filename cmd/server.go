@@ -14,9 +14,9 @@ var Server = &cobra.Command{
 }
 
 func init() {
-	Server.Flags().StringP("config-file", "c", "", "specify the config file")
-	Server.Flags().Int("http-port", 8080, "port to expose the health dashboard")
+	Server.Flags().StringP("config-file", "c", "konfig-manager.yaml", "specify the config file")
+	Server.Flags().Int("port", 8080, "http port")
 	Server.Flags().StringSliceP("repos", "r", []string{}, "list of repos to parse")
-	Server.Flags().StringSliceP("branches", "b", []string{}, "list of branches to parse in the specified repos")
-	Server.Flags().StringP("allowedOrigins", "o", "", "To set the allowed origins in the http server")
+	Server.Flags().StringSliceP("branches", "b", []string{"main"}, "list of branches to parse in the specified repos")
+	Server.Flags().StringP("allowed-origins", "", "", "To set the allowed origins in the http server")
 }

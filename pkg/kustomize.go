@@ -30,7 +30,7 @@ type KustomizeResources struct {
 	Properties  map[string]string
 }
 
-func GenerateMetrics(repos []string, branches []string, hierarchy Config) []map[string]KustomizeResources {
+func ReadConfiguration(repos []string, branches []string, hierarchy Config) []map[string]KustomizeResources {
 	var data []map[string]KustomizeResources
 	for _, repo := range repos {
 		data = append(data, parseRepoWithBranches(repo, branches, hierarchy))
@@ -80,7 +80,7 @@ func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map
 					return err
 				}
 				// adding objects only if present in the config
-				resource.Objects = getObjectsFromHierarchy(hierarchy, getKustomizeResourceObjects(resource.Resources, resource.FileDir))
+				resource.Objects = hierarchy.WalkHierarchy(getKustomizeResourceObjects(resource.Resources, resource.FileDir))
 				data[resource.FileDir] = resource
 				resourceList = append(resourceList, resource)
 				return nil
@@ -110,7 +110,7 @@ func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map
 func fillProperties(dataWithOutProperties map[string]KustomizeResources, hierarchy Config) map[string]KustomizeResources {
 	var dataWithProperties = make(map[string]KustomizeResources)
 	for key, kustomizeResource := range dataWithOutProperties {
-		kustomizeResource.Properties = generatePropertiesForApp(hierarchy, kustomizeResource.Objects)
+		kustomizeResource.Properties = hierarchy.GetPropertiesMap(kustomizeResource.Objects)
 		dataWithProperties[key] = kustomizeResource
 	}
 	return dataWithProperties
