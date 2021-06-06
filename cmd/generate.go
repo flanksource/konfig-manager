@@ -62,7 +62,9 @@ var GenerateCmd = &cobra.Command{
 				if err != nil {
 					return err
 				}
-				os.MkdirAll(path.Dir(filePath), 0755)
+				if err := os.MkdirAll(path.Dir(filePath), 0755); err != nil {
+					return err
+				}
 				if err := ioutil.WriteFile(filePath, []byte(file), 0644); err != nil {
 					return err
 				}
