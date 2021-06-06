@@ -39,9 +39,7 @@ func GenerateMetrics(repos []string, branches []string, hierarchy Config) []map[
 }
 
 func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map[string]KustomizeResources {
-	fmt.Println(hierarchy)
 	var data = make(map[string]KustomizeResources)
-	//var pkgResources []Resource
 	dir, _ := ioutil.TempDir("/tmp", rand.String(5))
 	err := exec.Exec(fmt.Sprintf("git clone %v %v", repo, dir))
 	if err != nil {
@@ -56,7 +54,6 @@ func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map
 	logger.Debugf("changed context dir to %v", dir)
 	for _, branch := range branches {
 		var resourceList []KustomizeResources
-		fmt.Println("checking out branches")
 		if err := exec.Exec(fmt.Sprintf("git checkout %v", branch)); err != nil {
 			logger.Fatalf("error checking out branch %v", branch)
 			return nil
