@@ -16,7 +16,7 @@
 
 ## binaries
 bin/
-
+.bin/
 ## IDE files
 .idea/
 *.iml
