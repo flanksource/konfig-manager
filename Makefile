@@ -1,9 +1,7 @@
 default: build
 NAME:=konfig-manager
 
-ifeq ($(VERSION),)
-VERSION=$(shell git describe --tags  --long)-$(shell date +"%Y%m%d%H%M%S")
-endif
+VERSION=$(VERSION)-$(shell date +"%Y%m%d%H%M%S")
 
 .PHONY: fmt
 fmt:

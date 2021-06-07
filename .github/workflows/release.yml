@@ -25,10 +25,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: make release
-      - uses: actions/upload-artifact@v2
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: konfig-manager
-          path: ./.bin/*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./.bin/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
 
   semantic-release:
     needs: test
