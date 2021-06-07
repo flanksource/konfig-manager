@@ -29,8 +29,8 @@ linux:
 
 .PHONY: darwin
 darwin:
-	GOOS=darwin GOARCH=amd64 go build -ldflags "-X \"main.version=$(VERSION)\""  -o .bin/$(NAME)_darwin-amd64
-	GOOS=darwin GOARCH=arm64 go build -ldflags "-X \"main.version=$(VERSION)\"" -o .bin/$(NAME)_darwin-arm64
+	GOOS=darwin GOARCH=amd64 go build -ldflags "-X \"main.version=$(VERSION)\""  -o .bin/$(NAME)_osx-amd64
+	GOOS=darwin GOARCH=arm64 go build -ldflags "-X \"main.version=$(VERSION)\"" -o .bin/$(NAME)_osx-arm64
 
 .PHONY: windows
 windows:
