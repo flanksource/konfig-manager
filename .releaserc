@@ -14,13 +14,15 @@ plugins:
   - "@semantic-release/release-notes-generator"
   - - "@semantic-release/github"
     - assets:
-      - path: ./bin/konfig-manager_linux-amd64
+      - path: ./.bin/konfig-manager_linux-amd64
         name: konfig-manager_linux-amd64
-      - path: ./bin/konfig-manager_linux-arm64
+      - path: ./.bin/konfig-manager_linux-arm64
         name: konfig-manager_linux-arm64
-      - path: ./bin/konfig-manager_darwin-amd64
-        name: konfig-manager_darwin-amd64
-      - path: ./bin/konfig-manager_darwin-arm64
-        name: konfig-manager_darwin-arm64
+      - path: ./.bin/konfig-manager_osx-amd64
+        name: konfig-manager_osx-amd64
+      - path: ./.bin/konfig-manager_osx-arm64
+        name: konfig-manager_osx-arm64
+      - path: ./.bin/konfig-manager.exe
+        name: konfig-manager.exe
 branches:
   - main
