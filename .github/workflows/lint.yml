@@ -3,10 +3,14 @@ on:
   push:
     branches:
       - master
+      - main
   pull_request:
     paths:
       - '**.go'
       - 'Makefile'
+      - '**.md'
+      - '**/.markdownlint.*'
+      - '**/github/workflows/lint.yml'
 jobs:
   golangci:
     name: lint
@@ -16,3 +20,11 @@ jobs:
       - uses: actions/setup-go@v2
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
+  markdown:
+    runs-on: ubuntu-latest
+    container:
+      image: node:15.14-alpine
+    steps:
+      - uses: actions/checkout@master
+      - run: apk upgrade && apk add --no-cache make bash
+      - run: make lint-markdown
