@@ -14,7 +14,6 @@ jobs:
         - name: Test
           run: make build test
 
-
   binary:
     needs: semantic-release
     runs-on: ubuntu-latest

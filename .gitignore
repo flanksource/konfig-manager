@@ -20,5 +20,6 @@ bin/
 ## IDE files
 .idea/
 *.iml
+.vscode
 
 test/output/
