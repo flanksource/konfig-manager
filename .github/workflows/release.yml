@@ -14,7 +14,6 @@ jobs:
         - name: Test
           run: make build test
 
-
   binary:
     needs: semantic-release
     runs-on: ubuntu-latest
@@ -25,13 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: make release
-
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./.bin/*
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
           file_glob: true
 

@@ -1,5 +1,5 @@
 hierarchy:
-  - name: "spring-defaults-{{.}}"
+  - name: "spring-defaults-{{.name}}"
     namespace: default
     kind: ConfigMap
   - name: temp
@@ -8,7 +8,7 @@ hierarchy:
   - name: sample
     namespace: default
     kind: ConfigMap
-    type: File
+    type: propeties
     key: application.properties
   - name: test
     namespace: default
