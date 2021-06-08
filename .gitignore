@@ -30,6 +30,7 @@ ui/.pnp
 
 # testing
 coverage
+/coverage
 
 # next.js
 ui/.next/
@@ -59,4 +60,3 @@ yarn-error.log*
 node_modules
 .bin
 .next
-
