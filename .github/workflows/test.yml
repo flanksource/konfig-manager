@@ -4,7 +4,19 @@ on:
       - v*
     branches:
       - master
+      - main
   pull_request:
+      paths:
+      - '**.jsx?'
+      - '**.tsx?'
+      - '**/.babelrc'
+      - '**/jest*'
+      - '**/package.json'
+      - '**/github/workflows/**/test.yml'
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Makefile'
 name: Test
 jobs:
   test:
