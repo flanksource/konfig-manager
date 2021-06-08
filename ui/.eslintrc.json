@@ -1,0 +1,41 @@
+{
+    "env": {
+      "browser": true
+    },
+    "settings": {
+      "import/resolver": {
+        "webpack": {}
+      }
+    },
+    "parserOptions": {
+      "jsx": true,
+      "ecmaVersion": 12,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "impliedStrict": true
+      },
+      "allowImportExportEverywhere": false
+    },
+    "extends": [
+      "eslint:recommended",
+      "airbnb",
+      "plugin:jsx-a11y/recommended",
+      "plugin:jest/recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "prettier"
+    ],
+    "plugins": [
+      "react-hooks",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error"
+      ],
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "react/jsx-props-no-spreading": 0
+    }
+  }

@@ -8,6 +8,11 @@ on:
     paths:
       - '**.go'
       - 'Makefile'
+      - '**.jsx?'
+      - '**.tsx?'
+      - '**/.babelrc'
+      - '**/.eslint*'
+      - '**/package.json'
       - '**.md'
       - '**/.markdownlint.*'
       - '**/github/workflows/lint.yml'
@@ -20,6 +25,16 @@ jobs:
       - uses: actions/setup-go@v2
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
+  eslint:
+    runs-on: ubuntu-latest
+    container:
+      image: node:15.14-alpine
+    steps:
+      - uses: actions/checkout@master
+      - run: npm ci
+        working-directory: ./ui
+      - run: npm run lint:eslint
+        working-directory: ./ui
   markdown:
     runs-on: ubuntu-latest
     container:
