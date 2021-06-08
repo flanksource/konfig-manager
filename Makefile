@@ -15,7 +15,6 @@ vet:
 build:
 	go build -ldflags "-X \"main.version=$(VERSION_TAG)\"" -o bin/konfig-manager
 
-
 .PHONY: install
 install: build
 	cp bin/konfig-manager /usr/local/bin/
@@ -23,12 +22,12 @@ install: build
 .PHONY: linux
 linux:
 	GOOS=linux GOARCH=amd64 go build -ldflags "-X \"main.version=$(VERSION_TAG)\"" -o .bin/$(NAME)_linux-amd64
-	GOOS=linux GOARCH=arm64 go build -ldflags "-X \"main.version=$(VERSION)\"" -o .bin/$(NAME)_linux-arm64
+	GOOS=linux GOARCH=arm64 go build -ldflags "-X \"main.version=$(VERSION_TAG)\"" -o .bin/$(NAME)_linux-arm64
 
 .PHONY: darwin
 darwin:
-	GOOS=darwin GOARCH=amd64 go build -ldflags "-X \"main.version=$(VERSION_TAG)\""  -o .bin/$(NAME)_osx-amd64
-	GOOS=darwin GOARCH=arm64 go build -ldflags "-X \"main.version=$(VERSION_TAG)\"" -o .bin/$(NAME)_osx-arm64
+	GOOS=darwin GOARCH=amd64 go build -ldflags "-X \"main.version=$(VERSION_TAG)\""  -o .bin/$(NAME)_darwin-amd64
+	GOOS=darwin GOARCH=arm64 go build -ldflags "-X \"main.version=$(VERSION_TAG)\"" -o .bin/$(NAME)_darwin-arm64
 
 .PHONY: windows
 windows:
