@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"flag"
+	"os"
+
 	konfigmanagerv1 "github.com/flanksource/konfig-manager/api/v1"
 	"github.com/flanksource/konfig-manager/controllers"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
@@ -29,11 +30,10 @@ func init() {
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.BoolVar(&dev, "dev", false, "run operator in developement mode")
+	flag.BoolVar(&dev, "dev", false, "run operator in development mode")
 }
 
 func run(cmd *cobra.Command, args []string) {
-
 	scheme := runtime.NewScheme()
 	setupLog := ctrl.Log.WithName("setup")
 

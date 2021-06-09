@@ -15,6 +15,11 @@ spec:
       kind: ConfigMap
       type: properties
       key: some_file
+    - name: test4
+      namespace: default
+      kind: Secret
+      type: properties
+      key: diff_file
   output:
     name: properties-file
     namespace: default
