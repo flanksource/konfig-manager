@@ -29,7 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-// HierarchyConfigReconciler reconciles a HierarchyConfig object
+// HierarchyConfigReconciler reconciles a Konfig object
 type HierarchyConfigReconciler struct {
 	client.Client
 	Scheme  *runtime.Scheme
@@ -44,14 +44,14 @@ type HierarchyConfigReconciler struct {
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
-// the HierarchyConfig object against the actual cluster state, and then
+// the Konfig object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *HierarchyConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	hierarchyConfig := &konfigmanagerv1.HierarchyConfig{}
+	hierarchyConfig := &konfigmanagerv1.Konfig{}
 	err := r.Get(ctx, req.NamespacedName, hierarchyConfig)
 	if err != nil {
 		r.Log.Error(err, "error fetching hierarchy config object name: %v namespace", req.Name, req.Namespace)
@@ -63,8 +63,7 @@ func (r *HierarchyConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		r.Log.Error(err, "error fetching resources")
 		return ctrl.Result{}, nil
 	}
-	properties := config.GetPropertiesMap(resources)
-	err = r.createOutput(hierarchyConfig.Spec.Output, properties)
+	err = r.createOutputObject(hierarchyConfig.Spec.Output, config, resources)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -76,6 +75,6 @@ func (r *HierarchyConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 func (r *HierarchyConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	r.Kommons = kommons.NewClient(mgr.GetConfig(), logger.StandardLogger())
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&konfigmanagerv1.HierarchyConfig{}).
+		For(&konfigmanagerv1.Konfig{}).
 		Complete(r)
 }

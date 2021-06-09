@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: hierarchyconfigs.konfigmanager.flanksource.com
+  name: konfigs.konfigmanager.flanksource.com
 spec:
   group: konfigmanager.flanksource.com
   names:
-    kind: HierarchyConfig
-    listKind: HierarchyConfigList
-    plural: hierarchyconfigs
-    singular: hierarchyconfig
+    kind: Konfig
+    listKind: KonfigList
+    plural: konfigs
+    singular: konfig
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: HierarchyConfig is the Schema for the hierarchyconfigs API
+        description: Konfig is the Schema for the hierarchyconfigs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: HierarchyConfigSpec defines the desired state of HierarchyConfig
+            description: KonfigSpec defines the desired state of Konfig
             properties:
               hierarchy:
                 items:
@@ -75,7 +75,7 @@ spec:
             - hierarchy
             type: object
           status:
-            description: HierarchyConfigStatus defines the observed state of HierarchyConfig
+            description: KonfigStatus defines the observed state of Konfig
             properties:
               hierarchy:
                 items:

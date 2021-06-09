@@ -30,14 +30,14 @@ type Output struct {
 	FileName  string `yaml:"fileName,omitempty" json:"fileName,omitempty"`
 }
 
-// HierarchyConfigSpec defines the desired state of HierarchyConfig
-type HierarchyConfigSpec struct {
+// KonfigSpec defines the desired state of Konfig
+type KonfigSpec struct {
 	Hierarchy []pkg.Item `yaml:"hierarchy" json:"hierarchy"`
 	Output    Output     `yaml:"output,omitempty" json:"output,omitempty"`
 }
 
-// HierarchyConfigStatus defines the observed state of HierarchyConfig
-type HierarchyConfigStatus struct {
+// KonfigStatus defines the observed state of Konfig
+type KonfigStatus struct {
 	Hierarchy []pkg.Item `yaml:"hierarchy" json:"hierarchy"`
 	Output    Output     `yaml:"output,omitempty" json:"output,omitempty"`
 }
@@ -45,24 +45,24 @@ type HierarchyConfigStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// HierarchyConfig is the Schema for the hierarchyconfigs API
-type HierarchyConfig struct {
+// Konfig is the Schema for the hierarchyconfigs API
+type Konfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   HierarchyConfigSpec   `json:"spec,omitempty"`
-	Status HierarchyConfigStatus `json:"status,omitempty"`
+	Spec   KonfigSpec   `json:"spec,omitempty"`
+	Status KonfigStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// HierarchyConfigList contains a list of HierarchyConfig
-type HierarchyConfigList struct {
+// KonfigList contains a list of Konfig
+type KonfigList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []HierarchyConfig `json:"items"`
+	Items           []Konfig `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&HierarchyConfig{}, &HierarchyConfigList{})
+	SchemeBuilder.Register(&Konfig{}, &KonfigList{})
 }

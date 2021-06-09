@@ -1,18 +1,30 @@
 package controllers
 
 import (
-	"fmt"
-
 	konfigmanagerv1 "github.com/flanksource/konfig-manager/api/v1"
 	"github.com/flanksource/konfig-manager/pkg"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
-func (r *HierarchyConfigReconciler) createOutput(output konfigmanagerv1.Output, properties map[string]string) error {
+const (
+	configMapKind  = "ConfigMap"
+	secretKind     = "Secret"
+	coreAPIVersion = "v1"
+)
+
+func (r *HierarchyConfigReconciler) createOutputObject(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) error {
+	properties := make(map[string]string)
 	if output.Type == "file" || output.Type == "File" {
-		properties = getPropertiesInFileFormat(properties, output.FileName)
+		if output.FileName == "" {
+			output.FileName = "application.properties"
+		}
+		properties[output.FileName] = config.GeneratePropertiesFile(resources)
 	}
 	if output.Kind == "ConfigMap" || output.Kind == "configmap" || output.Kind == "cm" {
-		if err := r.Kommons.CreateOrUpdateConfigMap(output.Name, output.Namespace, properties); err != nil {
+		if err := r.Kommons.Apply(output.Namespace, getConfigMap(output.Name, output.Namespace, properties)); err != nil {
+			r.Log.Error(err, "error creating/updating configmap", output.Name, output.Namespace)
 			return err
 		}
 		r.Log.Info("created/updated configmap", output.Name, output.Namespace)
@@ -23,26 +35,41 @@ func (r *HierarchyConfigReconciler) createOutput(output konfigmanagerv1.Output, 
 		for key, value := range properties {
 			propertiesWithBytes[key] = []byte(value)
 		}
-		if err := r.Kommons.CreateOrUpdateSecret(output.Name, output.Namespace, propertiesWithBytes); err != nil {
+		if err := r.Kommons.Apply(output.Namespace, getSecret(output.Name, output.Namespace, propertiesWithBytes)); err != nil {
+			r.Log.Error(err, "error creating/updating secret", output.Name, output.Namespace)
 			return err
 		}
 		r.Log.Info("created/updated secret", output.Name, output.Namespace)
 	}
-	//r.Kommons.Apply()
 	return nil
 }
 
-func getPropertiesInFileFormat(properties map[string]string, filename string) map[string]string {
-	propertiesFile := make(map[string]string)
-	if filename == "" {
-		filename = "application.properties"
+func getConfigMap(name, namespace string, properties map[string]string) runtime.Object {
+	return &v1.ConfigMap{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       configMapKind,
+			APIVersion: coreAPIVersion,
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Data: properties,
 	}
-	var data string
-	for key, value := range properties {
-		data = data + fmt.Sprintf("%v=%v\n", key, value)
+}
+
+func getSecret(name, namespace string, properties map[string][]byte) runtime.Object {
+	return &v1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       secretKind,
+			APIVersion: coreAPIVersion,
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Data: properties,
 	}
-	propertiesFile[filename] = data
-	return propertiesFile
 }
 
 func (r *HierarchyConfigReconciler) getResources(config pkg.Config) ([]pkg.Resource, error) {

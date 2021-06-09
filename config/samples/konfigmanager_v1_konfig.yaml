@@ -1,7 +1,7 @@
 apiVersion: konfigmanager.flanksource.com/v1
-kind: HierarchyConfig
+kind: Konfig
 metadata:
-  name: hierarchyconfig-sample
+  name: konfig-sample
 spec:
   hierarchy:
     - name: test
