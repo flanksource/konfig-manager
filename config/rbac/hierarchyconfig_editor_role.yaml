@@ -1,0 +1,24 @@
+# permissions for end users to edit hierarchyconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hierarchyconfig-editor-role
+rules:
+- apiGroups:
+  - konfigmanager.flanksource.com
+  resources:
+  - hierarchyconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - konfigmanager.flanksource.com
+  resources:
+  - hierarchyconfigs/status
+  verbs:
+  - get

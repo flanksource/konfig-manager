@@ -12,16 +12,16 @@ import (
 )
 
 type Config struct {
-	Hierarchy []Item
+	Hierarchy []Item `yaml:"hierarchy" json:"hierarchy"`
 }
 
 type Item struct {
-	Kind      string
-	Name      string
-	Namespace string
-	Type      ResourceType
-	Key       string
-	Index     int
+	Kind      string       `yaml:"kind" json:"kind"`
+	Name      string       `yaml:"name" json:"name"`
+	Namespace string       `yaml:"namespace,omitempty" json:"namespace,omitempty"`
+	Type      ResourceType `yaml:"type,omitempty" json:"type,omitempty"`
+	Key       string       `yaml:"key,omitempty" json:"key,omitempty"`
+	Index     int          `yaml:"index,omitempty" json:"index,omitempty"`
 }
 
 func (item Item) String() string {

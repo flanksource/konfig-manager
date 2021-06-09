@@ -38,6 +38,7 @@ func main() {
 	}
 	root.AddCommand(cmd.GenerateCmd)
 	root.AddCommand(cmd.Server)
+	root.AddCommand(cmd.Operator)
 	root.AddCommand(&cobra.Command{
 		Use:   "version",
 		Short: "Print the version of konfig-manager",
