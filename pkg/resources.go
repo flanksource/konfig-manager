@@ -76,7 +76,13 @@ func (r Resource) GetPropertiesMap() map[string]string {
 
 func (r Resource) GeneratePropertesMapFromProperties() map[string]string {
 	var propertiesMap = make(map[string]string)
-	prop := r.Item.Object["data"].(map[string]interface{})[r.Hierarchy.Key].(string)
+	var prop string
+	if r.Item.GetKind() == "Secret" {
+		val, _ := base64.Decode(r.Item.Object["data"].(map[string]interface{})[r.Hierarchy.Key].(string))
+		prop = string(val)
+	} else {
+		prop = r.Item.Object["data"].(map[string]interface{})[r.Hierarchy.Key].(string)
+	}
 	for _, keyValue := range strings.Split(prop, "\n") {
 		propKeyValue := strings.Split(keyValue, "=")
 		if len(propKeyValue) == 2 {

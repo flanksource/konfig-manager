@@ -1,0 +1,27 @@
+apiVersion: konfigmanager.flanksource.com/v1
+kind: Konfig
+metadata:
+  name: konfig-sample
+spec:
+  hierarchy:
+    - name: test
+      namespace: default
+      kind: ConfigMap
+    - name: test2
+      namespace: default
+      kind: ConfigMap
+    - name: test3
+      namespace: default
+      kind: ConfigMap
+      type: properties
+      key: some_file
+    - name: test4
+      namespace: default
+      kind: Secret
+      type: properties
+      key: diff_file
+  output:
+    name: properties-file
+    namespace: default
+    kind: ConfigMap
+    type: file

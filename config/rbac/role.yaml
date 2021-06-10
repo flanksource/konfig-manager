@@ -1,0 +1,49 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - konfigmanager.flanksource.com
+  resources:
+  - hierarchyconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - konfigmanager.flanksource.com
+  resources:
+  - hierarchyconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - konfigmanager.flanksource.com
+  resources:
+  - hierarchyconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: manager-role
+  namespace: '*'
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps,secrets
+  verbs:
+  - '*'
