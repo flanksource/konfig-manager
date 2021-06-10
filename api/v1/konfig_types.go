@@ -27,7 +27,7 @@ type Output struct {
 	Namespace string `yaml:"namespace,omitempty" json:"namespace,omitempty"`
 	Kind      string `yaml:"kind,omitempty" json:"kind,omitempty"`
 	Type      string `yaml:"type,omitempty" json:"type,omitempty"`
-	FileName  string `yaml:"fileName,omitempty" json:"fileName,omitempty"`
+	Key       string `yaml:"key,omitempty" json:"key,omitempty"`
 }
 
 // KonfigSpec defines the desired state of Konfig

@@ -6,5 +6,6 @@ COPY ./ ./
 RUN make build
 
 FROM ubuntu:bionic
+USER 1000
 COPY --from=builder /app/bin/konfig-manager /bin/
 ENTRYPOINT ["/bin/konfig-manager"]

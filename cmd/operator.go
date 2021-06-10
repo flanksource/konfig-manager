@@ -27,13 +27,13 @@ var metricsAddr, probeAddr string
 var syncPeriod time.Duration
 
 func init() {
-	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8081", "The address the metric endpoint binds to.")
-	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8082", "The address the probe endpoint binds to.")
-	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
+	Operator.Flags().StringVar(&metricsAddr, "metrics-bind-address", ":8081", "The address the metric endpoint binds to.")
+	Operator.Flags().StringVar(&probeAddr, "health-probe-bind-address", ":8082", "The address the probe endpoint binds to.")
+	Operator.Flags().BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.BoolVar(&dev, "dev", false, "run operator in development mode")
-	flag.DurationVar(&syncPeriod, "sync-period", 10*time.Minute, "The time duration to run a full reconcile")
+	Operator.Flags().BoolVar(&dev, "dev", false, "run operator in development mode")
+	Operator.Flags().DurationVar(&syncPeriod, "sync-period", 10*time.Minute, "The time duration to run a full reconcile")
 }
 
 func run(cmd *cobra.Command, args []string) {

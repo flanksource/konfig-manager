@@ -5,7 +5,7 @@ VERSION_TAG=$(VERSION)-$(shell date +"%Y%m%d%H%M%S")
 
 
 # Image URL to use all building/pushing image targets
-IMG ?= docker.io/flanksource/konfig-manager:$(TAG)
+IMG ?= flanksource/konfig-manager:$(VERSION)
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
@@ -127,6 +127,12 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: ## Download controller-gen locally if necessary.
 	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1)
+
+static: manifests generate
+	mkdir -p config/deploy
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	$(KUSTOMIZE) build config/crd > config/deploy/crd.yml
+	$(KUSTOMIZE) build config/default > config/deploy/operator.yml
 
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: ## Download kustomize locally if necessary.

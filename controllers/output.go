@@ -17,10 +17,10 @@ const (
 func (r *HierarchyConfigReconciler) createOutputObject(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) error {
 	properties := make(map[string]string)
 	if output.Type == "file" || output.Type == "File" {
-		if output.FileName == "" {
-			output.FileName = "application.properties"
+		if output.Key == "" {
+			output.Key = "application.properties"
 		}
-		properties[output.FileName] = config.GeneratePropertiesFile(resources)
+		properties[output.Key] = config.GeneratePropertiesFile(resources)
 	}
 	if output.Kind == "ConfigMap" || output.Kind == "configmap" || output.Kind == "cm" {
 		if err := r.Kommons.Apply(output.Namespace, getConfigMap(output.Name, output.Namespace, properties)); err != nil {

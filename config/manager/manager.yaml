@@ -26,8 +26,9 @@ spec:
         runAsNonRoot: true
       containers:
       - command:
-        - /manager
+        - /bin/konfig-manager
         args:
+        - operator
         - --leader-elect
         image: controller:latest
         name: manager
