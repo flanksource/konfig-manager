@@ -7,9 +7,16 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
   - konfigmanager.flanksource.com
   resources:
-  - hierarchyconfigs
+  - konfigs
   verbs:
   - create
   - delete
@@ -21,29 +28,14 @@ rules:
 - apiGroups:
   - konfigmanager.flanksource.com
   resources:
-  - hierarchyconfigs/finalizers
+  - konfigs/finalizers
   verbs:
   - update
 - apiGroups:
   - konfigmanager.flanksource.com
   resources:
-  - hierarchyconfigs/status
+  - konfigs/status
   verbs:
   - get
   - patch
   - update
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  creationTimestamp: null
-  name: manager-role
-  namespace: '*'
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps,secrets
-  verbs:
-  - '*'

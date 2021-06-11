@@ -37,10 +37,10 @@ type HierarchyConfigReconciler struct {
 	Log     logr.Logger
 }
 
-//+kubebuilder:rbac:groups=konfigmanager.flanksource.com,resources=hierarchyconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=konfigmanager.flanksource.com,resources=hierarchyconfigs/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=konfigmanager.flanksource.com,resources=hierarchyconfigs/finalizers,verbs=update
-//+kubebuilder:rbac:groups="",resources="configmaps,secrets",verbs="*",namespace="*"
+//+kubebuilder:rbac:groups=konfigmanager.flanksource.com,resources=konfigs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=konfigmanager.flanksource.com,resources=konfigs/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=konfigmanager.flanksource.com,resources=konfigs/finalizers,verbs=update
+//+kubebuilder:rbac:groups="",resources=configmaps;secrets,verbs="*"
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

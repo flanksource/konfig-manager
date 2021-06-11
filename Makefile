@@ -133,6 +133,7 @@ static: manifests generate
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/crd > config/deploy/crd.yml
 	$(KUSTOMIZE) build config/default > config/deploy/operator.yml
+	$(KUSTOMIZE) build config/base > config/base/deploy.yml
 
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: ## Download kustomize locally if necessary.
