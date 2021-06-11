@@ -1,8 +1,6 @@
 # Adds namespace to all resources.
 namespace: platform-system
 
-namePrefix: konfig-manager-
-
 bases:
   - ../rbac
   - ../manager
