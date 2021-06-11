@@ -12,8 +12,8 @@ spec:
         - "--config=controller_manager_config.yaml"
         volumeMounts:
         - name: konfig-manager-config
-          mountPath: /konfig_manager_config.yaml
-          subPath: konfig_manager_config.yaml
+          mountPath: /controller_manager_config.yaml
+          subPath: controller_manager_config.yaml
       volumes:
       - name: konfig-manager-config
         configMap:
