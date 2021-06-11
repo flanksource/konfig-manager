@@ -18,5 +18,5 @@ func init() {
 	Server.Flags().Int("port", 8080, "http port")
 	Server.Flags().StringSliceP("repos", "r", []string{}, "list of repos to parse")
 	Server.Flags().StringSliceP("branches", "b", []string{"main"}, "list of branches to parse in the specified repos")
-	Server.Flags().StringP("allowed-origins", "", "", "To set the allowed origins in the http server")
+	Server.Flags().StringP("allowed-origins", "", "", "to set the allowed origins in the http server")
 }

@@ -77,9 +77,9 @@ var GenerateCmd = &cobra.Command{
 }
 
 func init() {
-	GenerateCmd.Flags().StringVarP(&input, "input", "i", "-", "input of yaml dump")
-	GenerateCmd.Flags().StringVarP(&config, "config", "c", "config.yml", "path to config file consisting hierarchy")
-	GenerateCmd.Flags().StringSliceVarP(&applicationNames, "app", "a", []string{}, "name of application being templated")
-	GenerateCmd.Flags().StringVarP(&outputType, "output-type", "", "stdout", "Type of output, can be one stdout, properties")
-	GenerateCmd.Flags().StringVarP(&output, "output-path", "", "properties/{{.name}}.properties", "Output path")
+	GenerateCmd.Flags().StringVarP(&input, "input", "i", "-", "input of yaml dump (default '-' is stdin)")
+	GenerateCmd.Flags().StringVarP(&config, "config", "c", "config.yml", "path to config file containing hierarchy")
+	GenerateCmd.Flags().StringSliceVarP(&applicationNames, "app", "a", []string{}, "name of applications being templated")
+	GenerateCmd.Flags().StringVarP(&outputType, "output-type", "", "stdout", "type of output: can be one of stdout, properties")
+	GenerateCmd.Flags().StringVarP(&output, "output-path", "", "properties/{{.name}}.properties", "output path")
 }
