@@ -14,13 +14,15 @@ const (
 	coreAPIVersion = "v1"
 )
 
-func (r *HierarchyConfigReconciler) createOutputObject(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) error {
+func (r *KonfigReconciler) createOutputObject(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) error {
 	properties := make(map[string]string)
 	if output.Type == "file" || output.Type == "File" {
 		if output.Key == "" {
 			output.Key = "application.properties"
 		}
 		properties[output.Key] = config.GeneratePropertiesFile(resources)
+	} else {
+		properties = config.GetPropertiesMap(resources)
 	}
 	if output.Kind == "ConfigMap" || output.Kind == "configmap" || output.Kind == "cm" {
 		if err := r.Kommons.Apply(output.Namespace, getConfigMap(output.Name, output.Namespace, properties)); err != nil {
@@ -72,7 +74,7 @@ func getSecret(name, namespace string, properties map[string][]byte) runtime.Obj
 	}
 }
 
-func (r *HierarchyConfigReconciler) getResources(config pkg.Config) ([]pkg.Resource, error) {
+func (r *KonfigReconciler) getResources(config pkg.Config) ([]pkg.Resource, error) {
 	var resources []pkg.Resource
 	for _, item := range config.Hierarchy {
 		obj, err := r.Kommons.GetByKind(item.Kind, item.Namespace, item.Name)

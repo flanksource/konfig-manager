@@ -29,8 +29,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-// HierarchyConfigReconciler reconciles a Konfig object
-type HierarchyConfigReconciler struct {
+// KonfigReconciler reconciles a Konfig object
+type KonfigReconciler struct {
 	client.Client
 	Scheme  *runtime.Scheme
 	Kommons *kommons.Client
@@ -50,7 +50,7 @@ type HierarchyConfigReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
-func (r *HierarchyConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *KonfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	hierarchyConfig := &konfigmanagerv1.Konfig{}
 	err := r.Get(ctx, req.NamespacedName, hierarchyConfig)
 	if err != nil {
@@ -72,7 +72,7 @@ func (r *HierarchyConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *HierarchyConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *KonfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	r.Kommons = kommons.NewClient(mgr.GetConfig(), logger.StandardLogger())
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&konfigmanagerv1.Konfig{}).
