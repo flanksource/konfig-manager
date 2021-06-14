@@ -15,15 +15,7 @@ const (
 )
 
 func (r *KonfigReconciler) createOutputObject(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) error {
-	properties := make(map[string]string)
-	if output.Type == "file" || output.Type == "File" {
-		if output.Key == "" {
-			output.Key = "application.properties"
-		}
-		properties[output.Key] = config.GeneratePropertiesFile(resources)
-	} else {
-		properties = config.GetPropertiesMap(resources)
-	}
+	properties := getProperties(output, config, resources)
 	if output.Kind == "ConfigMap" || output.Kind == "configmap" || output.Kind == "cm" {
 		if err := r.Kommons.Apply(output.Namespace, getConfigMap(output.Name, output.Namespace, properties)); err != nil {
 			r.Log.Error(err, "error creating/updating configmap", output.Name, output.Namespace)
@@ -44,6 +36,19 @@ func (r *KonfigReconciler) createOutputObject(output konfigmanagerv1.Output, con
 		r.Log.Info("created/updated secret", output.Name, output.Namespace)
 	}
 	return nil
+}
+
+func getProperties(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) map[string]string {
+	properties := make(map[string]string)
+	if output.Type == "file" || output.Type == "File" {
+		if output.Key == "" {
+			output.Key = "application.properties"
+		}
+		properties[output.Key] = config.GeneratePropertiesFile(resources)
+	} else {
+		properties = config.GetPropertiesMap(resources)
+	}
+	return properties
 }
 
 func getConfigMap(name, namespace string, properties map[string]string) runtime.Object {
