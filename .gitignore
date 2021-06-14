@@ -22,7 +22,7 @@ bin/
 *.iml
 .vscode
 
-#testbin
-testbin/
-
 test/output/
+node_modules
+.bin
+.next
