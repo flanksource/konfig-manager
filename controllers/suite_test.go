@@ -17,10 +17,10 @@ limitations under the License.
 package controllers
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/flanksource/commons/logger"
 	"github.com/flanksource/kommons"
 	ctrl "sigs.k8s.io/controller-runtime"
 
@@ -44,8 +44,8 @@ import (
 var cfg *rest.Config
 var k8sClient client.Client
 var testEnv *envtest.Environment
-var kommonsClient *kommons.Client
 var err error
+var binDir string
 
 func TestAPIs(t *testing.T) {
 	RegisterFailHandler(Fail)
@@ -64,7 +64,7 @@ var _ = BeforeSuite(func() {
 		ErrorIfCRDPathMissing: true,
 	}
 
-	cfg, _, err = kommons.StartTestEnv("1.19.2")
+	cfg, binDir, err = kommons.StartTestEnv("1.19.2")
 	Expect(err).NotTo(HaveOccurred())
 	Expect(cfg).NotTo(BeNil())
 
@@ -88,7 +88,6 @@ var _ = BeforeSuite(func() {
 		Log:    ctrl.Log.WithName("controllers").WithName("KonfigManager"),
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
-	kommonsClient = kommons.NewClient(k8sManager.GetConfig(), logger.StandardLogger())
 	go func() {
 		err = k8sManager.Start(ctrl.SetupSignalHandler())
 		Expect(err).ToNot(HaveOccurred())
@@ -98,6 +97,8 @@ var _ = BeforeSuite(func() {
 
 var _ = AfterSuite(func() {
 	By("tearing down the test environment")
+	err = os.RemoveAll(binDir)
+	Expect(err).NotTo(HaveOccurred())
 	err := testEnv.Stop()
 	Expect(err).NotTo(HaveOccurred())
 })

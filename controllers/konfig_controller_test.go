@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	konfigmanagerv1 "github.com/flanksource/konfig-manager/api/v1"
@@ -107,7 +106,6 @@ var _ = Describe("CronJob controller", func() {
 				err := k8sClient.Get(ctx, outputLookupKey, createdOutput)
 				return err == nil
 			}, timeout, interval).Should(BeTrue())
-			fmt.Println(createdOutput)
 			Expect(createdOutput.Data["test-key"]).Should(Equal("test-value"))
 			Expect(createdOutput.Data["secret-key"]).Should(Equal("secret-value"))
 		})
