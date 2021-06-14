@@ -67,10 +67,10 @@ func run(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.HierarchyConfigReconciler{
+	if err = (&controllers.KonfigReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
-		Log:    ctrl.Log.WithName("controllers").WithName("canary"),
+		Log:    ctrl.Log.WithName("controllers").WithName("konfig-manager"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Konfig")
 		os.Exit(1)

@@ -68,6 +68,7 @@ docker:
 .PHONY: test
 test:
 	go test   ./test/... -test.v
+	go test ./controllers/... -test.v -ginkgo.v
 
 .PHONY: lint
 lint: fmt vet
