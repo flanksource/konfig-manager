@@ -3,27 +3,31 @@ package pkg
 import (
 	"fmt"
 	nethttp "net/http"
+	"path/filepath"
 
 	"github.com/flanksource/commons/logger"
 	"github.com/spf13/cobra"
 )
 
 func Server(cmd *cobra.Command) {
-	configFile, _ := cmd.Flags().GetString("config-file")
+	configFilePath, _ := cmd.Flags().GetString("config-file")
 	httpPort, _ := cmd.Flags().GetInt("port")
 	repos, _ := cmd.Flags().GetStringSlice("repos")
 	branches, _ := cmd.Flags().GetStringSlice("branches")
 	allowedOrigins, _ := cmd.Flags().GetString("allowed-origins")
-	hierarchy, err := GetHierarchy(configFile, "")
+
+	configFilePathAbsPath, err := filepath.Abs(configFilePath)
 	if err != nil {
-		logger.Fatalf("failed to get hierarchy: %v", err)
+		logger.Fatalf("failed to parse config file path: %v", err)
 	}
+
 	server := &APIServer{
-		Repos:     repos,
-		Hierarchy: hierarchy,
-		Branches:  branches,
+		Repos:      repos,
+		ConfigFile: configFilePathAbsPath,
+		Branches:   branches,
 	}
-	nethttp.HandleFunc("/api", simpleCors(server.Handler, allowedOrigins))
+	handler := server.GetConfigHandler()
+	nethttp.HandleFunc("/api", simpleCors(handler, allowedOrigins))
 	addr := fmt.Sprintf("0.0.0.0:%d", httpPort)
 	if err := nethttp.ListenAndServe(addr, nil); err != nil {
 		logger.Fatalf("failed to start server: %v", err)

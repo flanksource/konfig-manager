@@ -1,0 +1,37 @@
+hierarchy:
+  - name: global
+    kind: ConfigMap
+    hierarchyName: "global"
+  - name: global
+    kind: Secret
+    hierarchyName: "global"
+  - name: "{{.name}}-global"
+    kind: Secret
+    hierarchyName: "app-global"
+  - name: "{{.name}}-global"
+    kind: ConfigMap
+    hierarchyName: "app-global"
+  - name: "environment-class"
+    kind: Secret
+    hierarchyName: "environment-class"
+  - name: "environment-class"
+    kind: ConfigMap
+    hierarchyName: "environment-class"
+  - name: "{{.name}}-environment-class"
+    kind: Secret
+    hierarchyName: "app-environment-class"
+  - name: "{{.name}}-environment-class"
+    kind: ConfigMap
+    hierarchyName: "app-environment-class"
+  - name: "environment"
+    kind: Secret
+    hierarchyName: "environment"
+  - name: "environment"
+    kind: ConfigMap
+    hierarchyName: "environment"
+  - name: "{{.name}}"
+    kind: Secret
+    hierarchyName: "app"
+  - name: "{{.name}}"
+    kind: ConfigMap
+    hierarchyName: "app"
