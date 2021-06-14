@@ -13,7 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
-var _ = Describe("CronJob controller", func() {
+var _ = Describe("Konfig controller", func() {
 
 	// Define utility constants for object names and testing timeouts/durations and intervals.
 	const (
@@ -93,7 +93,7 @@ var _ = Describe("CronJob controller", func() {
 			konfigLookupKey := types.NamespacedName{Name: KonfigName, Namespace: KonfigNamespace}
 			createdKonfig := &konfigmanagerv1.Konfig{}
 
-			// We'll need to retry getting this newly created CronJob, given that creation may not immediately happen.
+			// We'll need to retry getting this newly created Konfig, given that creation may not immediately happen.
 			Eventually(func() bool {
 				err := k8sClient.Get(ctx, konfigLookupKey, createdKonfig)
 				return err == nil
