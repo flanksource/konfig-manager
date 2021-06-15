@@ -16,8 +16,8 @@ type testInput struct {
 
 var tests = map[string]testInput{
 	"testHierarchyMergeWithStdinInput": {
-		config:       "spring-config.yml",
-		data:         "spring.yml",
+		config:       "fixtures/spring-config.yml",
+		data:         "fixtures/spring.yml",
 		applications: []string{"spring"},
 		verifications: map[string]string{
 			"config-key":                  "some-value",
@@ -25,8 +25,8 @@ var tests = map[string]testInput{
 		},
 	},
 	"testHierarchyMergeWithInputFile": {
-		config:       "spring-config.yml",
-		data:         "spring.yml",
+		config:       "fixtures/spring-config.yml",
+		data:         "fixtures/spring.yml",
 		applications: []string{"spring"},
 		verifications: map[string]string{
 			"config-key":                  "some-value",
@@ -34,8 +34,8 @@ var tests = map[string]testInput{
 		},
 	},
 	"testReadFromConfigMapCreatedWithFile": {
-		config:       "fileProperties-config.yml",
-		data:         "fileProperties.yml",
+		config:       "fixtures/fileProperties-config.yml",
+		data:         "fixtures/fileProperties.yml",
 		applications: []string{"spring"},
 		verifications: map[string]string{
 			"some-key":                              "value-from-spring",
@@ -44,8 +44,8 @@ var tests = map[string]testInput{
 		},
 	},
 	"testSecretValues": {
-		config:       "secret-config.yml",
-		data:         "data-with-secrets.yml",
+		config:       "fixtures/secret-config.yml",
+		data:         "fixtures/data-with-secrets.yml",
 		applications: []string{"spring"},
 		verifications: map[string]string{
 			"secret-key":                            "some-value",
@@ -53,8 +53,8 @@ var tests = map[string]testInput{
 		},
 	},
 	"testMultipleApplications": {
-		config:       "multi-application-config.yml",
-		data:         "multi-applications.yml",
+		config:       "fixtures/multi-application-config.yml",
+		data:         "fixtures/multi-applications.yml",
 		applications: []string{"spring", "quarkus"},
 		verifications: map[string]string{ // putting common configs here which would be present in both the properties file
 			"config-key": "some-value",
@@ -64,7 +64,7 @@ var tests = map[string]testInput{
 	},
 }
 
-func TestMain(t *testing.T) {
+func TestGenerate(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			resources, err := pkg.ReadResources(test.data)

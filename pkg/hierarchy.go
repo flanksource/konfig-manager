@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"sort"
 
+	"github.com/pkg/errors"
+
 	"github.com/flanksource/commons/logger"
 	"github.com/flanksource/commons/text"
 	"github.com/flanksource/kommons"
@@ -16,12 +18,13 @@ type Config struct {
 }
 
 type Item struct {
-	Kind      string       `yaml:"kind" json:"kind"`
-	Name      string       `yaml:"name" json:"name"`
-	Namespace string       `yaml:"namespace,omitempty" json:"namespace,omitempty"`
-	Type      ResourceType `yaml:"type,omitempty" json:"type,omitempty"`
-	Key       string       `yaml:"key,omitempty" json:"key,omitempty"`
-	Index     int          `yaml:"index,omitempty" json:"index,omitempty"`
+	Kind          string       `yaml:"kind" json:"kind"`
+	Name          string       `yaml:"name" json:"name"`
+	Namespace     string       `yaml:"namespace,omitempty" json:"namespace,omitempty"`
+	Type          ResourceType `yaml:"type,omitempty" json:"type,omitempty"`
+	Key           string       `yaml:"key,omitempty" json:"key,omitempty"`
+	Index         int          `yaml:"index,omitempty" json:"index,omitempty"`
+	HierarchyName string       `yaml:"hierarchyName,omitempty" json:"hierarchyName,omitempty"`
 }
 
 func (item Item) String() string {
@@ -105,7 +108,7 @@ func GetHierarchy(configFile, applicationName string) (Config, error) {
 	logger.Infof("[%s] getting hierarchy for %s", configFile, applicationName)
 	buf, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		return Config{}, err
+		return Config{}, errors.Wrap(err, fmt.Sprintf("error reading %s", configFile))
 	}
 	var config Config
 	data, err := text.Template(string(buf), map[string]string{"name": applicationName})
@@ -118,7 +121,7 @@ func GetHierarchy(configFile, applicationName string) (Config, error) {
 		return Config{}, err
 	}
 	for i := range config.Hierarchy {
-		config.Hierarchy[i].Index = i + 1
+		config.Hierarchy[i].Index = i
 	}
 	return config, nil
 }
