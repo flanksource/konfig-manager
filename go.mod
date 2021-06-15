@@ -8,6 +8,8 @@ require (
 	github.com/go-logr/logr v0.3.0
 	github.com/hairyhenderson/gomplate/v3 v3.6.0
 	github.com/magiconair/properties v1.8.1
+	github.com/onsi/ginkgo v1.14.1
+	github.com/onsi/gomega v1.10.2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
