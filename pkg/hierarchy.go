@@ -121,8 +121,7 @@ func GetHierarchy(configFile, applicationName string) (Config, error) {
 		return Config{}, err
 	}
 	for i := range config.Hierarchy {
-		// Exposes a 1-based index API
-		config.Hierarchy[i].Index = i + 1
+		config.Hierarchy[i].Index = i
 	}
 	return config, nil
 }
