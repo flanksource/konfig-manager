@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/flanksource/commons/logger"
@@ -12,6 +11,10 @@ type APIServer struct {
 	Repos      []string
 	Branches   []string
 	ConfigFile string
+}
+
+type Error struct {
+	ErrorMessage string `yaml:"errorMessage" json:"errorMessage"`
 }
 
 func GetConfigData(input *APIServer, appName string, showObjects string) ([]map[string]KustomizeResources, error) {
@@ -29,25 +32,36 @@ func GetConfigData(input *APIServer, appName string, showObjects string) ([]map[
 }
 
 func (input *APIServer) GetConfigHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
+	return func(resp http.ResponseWriter, req *http.Request) {
+		resp.Header().Set("Content-Type", "application/json")
+
 		showObjects := req.URL.Query().Get("objects")
 		appName := req.URL.Query().Get("application")
 
 		data, err := GetConfigData(input, appName, showObjects)
+
+		handleError := func(errMessage string, err error, code int) {
+			logger.Errorf("%s: %v", errMessage, err)
+			newErr, _ := json.Marshal(&Error{ErrorMessage: errMessage})
+			resp.WriteHeader(code)
+			if _, err := resp.Write(newErr); err != nil {
+				logger.Errorf("failed to write body: %v", err)
+			}
+		}
+
 		if err != nil {
-			logger.Fatalf("failed to get hierarchy: %v", err)
+			handleError("failed to get hierarchy", err, http.StatusNotImplemented)
+			return
 		}
 
 		output, err := json.Marshal(data)
 		if err != nil {
-			logger.Errorf("error marshalling the data: %w", err)
+			handleError("failed to marshal data", err, http.StatusNotImplemented)
 			return
 		}
-		_, err = w.Write(output)
-		if err != nil {
-			fmt.Println(err)
-			logger.Errorf("error writing the body: %w", err)
+
+		if _, err := resp.Write(output); err != nil {
+			logger.Errorf("failed to write body: %v", err)
 			return
 		}
 	}

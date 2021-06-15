@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetConfigData(t *testing.T) {
-	configFilePathAbsPath, err := filepath.Abs("../test/data/large-config.yaml")
+	configFilePathAbsPath, err := filepath.Abs("../test/fixtures/large-config.yaml")
 	if err != nil {
 		logger.Fatalf("failed to parse config file path: %v", err)
 	}

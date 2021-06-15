@@ -18,13 +18,13 @@ type Config struct {
 }
 
 type Item struct {
-	Kind          string
-	Name          string
-	Namespace     string
-	Type          ResourceType
-	Key           string
-	Index         int
-	HierarchyName string `yaml:"hierarchyName"`
+	Kind          string       `yaml:"kind" json:"kind"`
+	Name          string       `yaml:"name" json:"name"`
+	Namespace     string       `yaml:"namespace,omitempty" json:"namespace,omitempty"`
+	Type          ResourceType `yaml:"type,omitempty" json:"type,omitempty"`
+	Key           string       `yaml:"key,omitempty" json:"key,omitempty"`
+	Index         int          `yaml:"index,omitempty" json:"index,omitempty"`
+	HierarchyName string       `yaml:"hierarchyName,omitempty" json:"hierarchyName,omitempty"`
 }
 
 func (item Item) String() string {
