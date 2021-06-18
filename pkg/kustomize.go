@@ -96,7 +96,8 @@ func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map
 			other := data[baseAbsolutePath]
 			if strings.HasPrefix(baseAbsolutePath, resource.FileDir) {
 				other.SubResource = true
-				other.SubEnvironment = resource.Environment
+				other.SubEnvironment = other.Environment
+				other.Environment = resource.Environment
 			} else {
 				other.ImportedBy = append(data[baseAbsolutePath].ImportedBy, resource.FilePath)
 				other.Global = true
