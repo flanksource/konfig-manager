@@ -17,17 +17,18 @@ import (
 )
 
 type KustomizeResources struct {
-	Resources   []string `yaml:"resources"`
-	Bases       []string `yaml:"bases"`
-	Environment string
-	FilePath    string
-	FileDir     string
-	Branch      string
-	SubResource bool
-	ImportedBy  []string
-	Global      bool
-	Objects     []Resource
-	Properties  map[string]string
+	Resources      []string `yaml:"resources"`
+	Bases          []string `yaml:"bases"`
+	Environment    string
+	SubEnvironment string
+	FilePath       string
+	FileDir        string
+	Branch         string
+	SubResource    bool
+	ImportedBy     []string
+	Global         bool
+	Objects        []Resource
+	Properties     map[string]string
 }
 
 func ReadConfiguration(repos []string, branches []string, hierarchy Config) []map[string]KustomizeResources {
@@ -95,6 +96,8 @@ func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map
 			other := data[baseAbsolutePath]
 			if strings.HasPrefix(baseAbsolutePath, resource.FileDir) {
 				other.SubResource = true
+				other.SubEnvironment = other.Environment
+				other.Environment = resource.Environment
 			} else {
 				other.ImportedBy = append(data[baseAbsolutePath].ImportedBy, resource.FilePath)
 				other.Global = true
