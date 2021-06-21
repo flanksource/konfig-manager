@@ -11,7 +11,8 @@
     "init": "jest --init",
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "fix:eslint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -24,13 +25,19 @@
   },
   "homepage": "https://github.com/flanksource/konfig-manager#readme",
   "dependencies": {
+    "@emotion/react": "^11.4.0",
+    "@material-ui/core": "^4.11.4",
     "next": "10.2.3",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-query": "^3.17.0",
+    "react-table": "^7.7.0"
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.3.0",
     "@testing-library/jest-dom": "^5.13.0",
     "@testing-library/react": "^11.2.7",
+    "@types/jest": "^26.0.23",
     "babel-jest": "^27.0.2",
     "eslint": "^7.27.0",
     "eslint-config-airbnb": "^18.2.1",

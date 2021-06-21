@@ -14,3 +14,35 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.scroll-table {
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: scroll;
+}
+
+#top {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#top > * {
+  width: 100%;
+}
+
+.scroll-table table tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: white;
+}
+
+.scroll-table table thead th:first-child {
+  position: sticky;
+  left: 0px;
+  z-index: 4;
+  background-color: lightgray;
+}
+
