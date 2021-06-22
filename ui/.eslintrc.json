@@ -1,0 +1,48 @@
+{   
+    "env": {
+      "browser": true,
+      "jest/globals": true
+    },
+    "settings": {
+      "import/resolver": {
+        "webpack": {}
+      },
+      "jest": {
+        "version": "27"
+      }
+    },
+    "parserOptions": {
+      "jsx": true,
+      "ecmaVersion": 12,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "impliedStrict": true
+      },
+      "allowImportExportEverywhere": false
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:jest/recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "airbnb",
+      "prettier"
+    ],
+    "plugins": [
+      "react-hooks",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error"
+      ],
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "react/jsx-props-no-spreading": 0,
+      "no-use-before-define": ["error", { "functions": false, "classes": true }],
+      "no-shadow": "off",
+      "no-param-reassign": "off"
+    }
+  }
