@@ -14,7 +14,8 @@ import (
 )
 
 type Config struct {
-	Hierarchy []Item `yaml:"hierarchy" json:"hierarchy"`
+	Hierarchy    []Item   `yaml:"hierarchy" json:"hierarchy"`
+	Applications []string `yaml:"applications,omitempty" json:"applications,omitempty"`
 }
 
 type Item struct {
