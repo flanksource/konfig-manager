@@ -39,6 +39,8 @@ spec:
               hierarchy:
                 items:
                   properties:
+                    hierarchyName:
+                      type: string
                     index:
                       type: integer
                     key:
@@ -80,6 +82,8 @@ spec:
               hierarchy:
                 items:
                   properties:
+                    hierarchyName:
+                      type: string
                     index:
                       type: integer
                     key:

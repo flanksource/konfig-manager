@@ -20,6 +20,8 @@ import (
 	"os"
 	"path"
 
+	"gopkg.in/yaml.v3"
+
 	"github.com/flanksource/commons/logger"
 	"github.com/flanksource/commons/text"
 	"github.com/flanksource/kommons"
@@ -28,8 +30,7 @@ import (
 )
 
 var (
-	input, output, outputType, config string
-	applicationNames                  []string
+	input, output, outputType, configFile string
 )
 
 // GenerateCmd represents the base command when called without any subcommands
@@ -46,10 +47,19 @@ var GenerateCmd = &cobra.Command{
 		for _, r := range resources {
 			logger.Debugf("%s", kommons.GetName(r.Item))
 		}
+		buf, err := ioutil.ReadFile(configFile)
+		if err != nil {
+			return err
+		}
+		var config pkg.Config
+		err = yaml.Unmarshal(buf, &config)
+		if err != nil {
+			return err
+		}
 
-		for _, name := range applicationNames {
+		for _, name := range config.Applications {
 			logger.Infof("[%s.properties]", name)
-			hierarchy, err := pkg.GetHierarchy(config, name)
+			hierarchy, err := pkg.GetHierarchy(configFile, name)
 			if err != nil {
 				return err
 			}
@@ -78,8 +88,7 @@ var GenerateCmd = &cobra.Command{
 
 func init() {
 	GenerateCmd.Flags().StringVarP(&input, "input", "i", "-", "input of yaml dump (default '-' is stdin)")
-	GenerateCmd.Flags().StringVarP(&config, "config", "c", "config.yml", "path to config file containing hierarchy")
-	GenerateCmd.Flags().StringSliceVarP(&applicationNames, "app", "a", []string{}, "name of applications being templated")
+	GenerateCmd.Flags().StringVarP(&configFile, "config", "c", "config.yml", "path to config file containing hierarchy")
 	GenerateCmd.Flags().StringVarP(&outputType, "output-type", "", "stdout", "type of output: can be one of stdout, properties")
 	GenerateCmd.Flags().StringVarP(&output, "output-path", "", "properties/{{.name}}.properties", "output path")
 }

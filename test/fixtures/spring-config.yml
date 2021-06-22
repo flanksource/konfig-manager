@@ -5,3 +5,4 @@ hierarchy:
   - name: temp
     namespace: default
     kind: ConfigMap
+applications: ["spring"]

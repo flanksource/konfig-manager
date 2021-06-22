@@ -16,27 +16,24 @@ type testInput struct {
 
 var tests = map[string]testInput{
 	"testHierarchyMergeWithStdinInput": {
-		config:       "fixtures/spring-config.yml",
-		data:         "fixtures/spring.yml",
-		applications: []string{"spring"},
+		config: "fixtures/spring-config.yml",
+		data:   "fixtures/spring.yml",
 		verifications: map[string]string{
 			"config-key":                  "some-value",
 			"spring.datasource.maxActive": "40",
 		},
 	},
 	"testHierarchyMergeWithInputFile": {
-		config:       "fixtures/spring-config.yml",
-		data:         "fixtures/spring.yml",
-		applications: []string{"spring"},
+		config: "fixtures/spring-config.yml",
+		data:   "fixtures/spring.yml",
 		verifications: map[string]string{
 			"config-key":                  "some-value",
 			"spring.datasource.maxActive": "40",
 		},
 	},
 	"testReadFromConfigMapCreatedWithFile": {
-		config:       "fixtures/fileProperties-config.yml",
-		data:         "fixtures/fileProperties.yml",
-		applications: []string{"spring"},
+		config: "fixtures/fileProperties-config.yml",
+		data:   "fixtures/fileProperties.yml",
 		verifications: map[string]string{
 			"some-key":                              "value-from-spring",
 			"new-key":                               "diff-value",
@@ -44,18 +41,16 @@ var tests = map[string]testInput{
 		},
 	},
 	"testSecretValues": {
-		config:       "fixtures/secret-config.yml",
-		data:         "fixtures/data-with-secrets.yml",
-		applications: []string{"spring"},
+		config: "fixtures/secret-config.yml",
+		data:   "fixtures/data-with-secrets.yml",
 		verifications: map[string]string{
 			"secret-key":                            "some-value",
 			"logging.level.org.springframework.web": "INFO",
 		},
 	},
 	"testMultipleApplications": {
-		config:       "fixtures/multi-application-config.yml",
-		data:         "fixtures/multi-applications.yml",
-		applications: []string{"spring", "quarkus"},
+		config: "fixtures/multi-application-config.yml",
+		data:   "fixtures/multi-applications.yml",
 		verifications: map[string]string{ // putting common configs here which would be present in both the properties file
 			"config-key": "some-value",
 			"secret-key": "some-value",

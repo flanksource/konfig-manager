@@ -7,3 +7,4 @@ hierarchy:
   - name: "spring-defaults-{{.name}}"
     namespace: default
     kind: ConfigMap
+applications: ["spring"]

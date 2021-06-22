@@ -27,7 +27,9 @@ func Server(cmd *cobra.Command) {
 		Branches:   branches,
 	}
 	handler := server.GetConfigHandler()
+	applicationHandler := server.GetApplicationHandler()
 	nethttp.HandleFunc("/api", simpleCors(handler, allowedOrigins))
+	nethttp.HandleFunc("/api/applications", simpleCors(applicationHandler, allowedOrigins))
 	addr := fmt.Sprintf("0.0.0.0:%d", httpPort)
 	if err := nethttp.ListenAndServe(addr, nil); err != nil {
 		logger.Fatalf("failed to start server: %v", err)

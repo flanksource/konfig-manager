@@ -13,3 +13,4 @@ hierarchy:
   - name: test
     namespace: default
     kind: Secret
+applications: ["spring", "quarkus"]
