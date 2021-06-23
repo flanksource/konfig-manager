@@ -1,7 +1,10 @@
 package pkg
 
 import (
+	"errors"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/flanksource/commons/logger"
 	"k8s.io/apimachinery/pkg/util/json"
@@ -64,6 +67,50 @@ func (input *APIServer) GetConfigHandler() http.HandlerFunc {
 			logger.Errorf("failed to write body: %v", err)
 			return
 		}
+	}
+}
+
+func (input *APIServer) GetSpaHandler(rootFs http.FileSystem) http.HandlerFunc {
+	readFile := func(file http.File) ([]byte, error) {
+		fileInfo, _ := file.Stat()
+		size := fileInfo.Size()
+		fileBuf := make([]byte, size)
+		_, err := file.Read(fileBuf)
+		return fileBuf, err
+	}
+
+	return func(resp http.ResponseWriter, req *http.Request) {
+		path, err := filepath.Abs(req.URL.Path)
+		if err != nil {
+			// if we failed to get the absolute path respond with a 400 bad request
+			// and stop
+			http.Error(resp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		_, err = rootFs.Open(path)
+		if errors.Is(err, os.ErrNotExist) {
+			// if the path does not return a file or directory, serve back index.html
+			indexFile, err := rootFs.Open("/index.html")
+			if err != nil {
+				http.Error(resp, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			fileData, err := readFile(indexFile)
+			if err != nil {
+				http.Error(resp, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if _, err := resp.Write(fileData); err != nil {
+				logger.Errorf("failed to write body: %v", err)
+			}
+			return
+		} else if err != nil {
+			// if we got an error (that wasn't that the file doesn't exist) stating the
+			// file, return a 500 internal server error and stop
+			http.Error(resp, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		http.FileServer(rootFs).ServeHTTP(resp, req)
 	}
 }
 
