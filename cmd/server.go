@@ -19,4 +19,6 @@ func init() {
 	Server.Flags().StringSliceP("repos", "r", []string{}, "list of repos to parse")
 	Server.Flags().StringSliceP("branches", "b", []string{"main"}, "list of branches to parse in the specified repos")
 	Server.Flags().StringP("allowed-origins", "", "", "to set the allowed origins in the http server")
+	Server.Flags().Int("devGuiHttpPort", 3000, "port used by a local npm server in development mode")
+	Server.Flags().Bool("dev", false, "run in development mode")
 }

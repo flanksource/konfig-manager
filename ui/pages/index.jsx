@@ -19,8 +19,17 @@ export default function Home() {
     data: apps,
     error,
     isFetching,
-  } = useQuery(["apps"], () =>
-    fetchStuff(`http://localhost:3000/test-data/applications.json`)
+  } = useQuery(
+    ["apps"],
+    () => {
+      if (window.DEMO_MODE) {
+        return fetchStuff(
+          `${process.env.serverPrefix}/test-data/applications.json`
+        );
+      }
+      return fetchStuff(`${process.env.serverPrefix}/api/applications`);
+    },
+    { staleTime: 1000, refetchOnWindowFocus: false }
   );
 
   if (status === "loading" || isFetching) {
@@ -40,27 +49,32 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <ul
-          css={css`
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-          `}
-        >
-          {apps.map((app) => (
-            <Link href={`/${app}`}>
+        {Array.isArray(apps) ? (
+          <ul
+            css={css`
+              list-style: none;
+              display: flex;
+              flex-wrap: wrap;
+            `}
+          >
+            {apps.map((app) => (
               <li
+                key={app}
                 css={css`
                   border: 1px solid black;
                   margin: 1rem;
                   padding: 1rem;
                 `}
               >
-                <a href={`/${app}`}>{app}</a>
+                <Link href={`/${app}`}>
+                  <a href={`/${app}`}>{app}</a>
+                </Link>
               </li>
-            </Link>
-          ))}
-        </ul>
+            ))}
+          </ul>
+        ) : (
+          <div>Application list not found</div>
+        )}
       </main>
     </div>
   );

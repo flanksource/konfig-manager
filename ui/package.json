@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
+    "export": "NODE_ENV=production && next build && next export",
     "build": "next build",
     "start": "next start",
     "jest": "jest",
-    "init": "jest --init",
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "fix:eslint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "test": "jest",

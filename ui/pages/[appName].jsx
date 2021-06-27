@@ -35,8 +35,19 @@ const App = () => {
     "app",
   ];
 
-  const { status, data, error, isFetching } = useQuery(["stuff", appName], () =>
-    fetchStuff(`http://localhost:3000/test-data/${appName}.json`)
+  const { status, data, error, isFetching } = useQuery(
+    ["stuff", appName],
+    () => {
+      if (window.DEMO_MODE) {
+        return fetchStuff(
+          `${process.env.serverPrefix}/test-data/${appName}.json`
+        );
+      }
+      return fetchStuff(
+        `${process.env.serverPrefix}/api?application=${appName}&objects=true`
+      );
+    },
+    { staleTime: 1000, refetchOnWindowFocus: false }
   );
 
   const {
@@ -44,8 +55,17 @@ const App = () => {
     data: apps,
     error: appFetchError,
     isFetching: isFetchingApps,
-  } = useQuery(["apps"], () =>
-    fetchStuff(`http://localhost:3000/test-data/applications.json`)
+  } = useQuery(
+    ["apps"],
+    () => {
+      if (window.DEMO_MODE) {
+        return fetchStuff(
+          `${process.env.serverPrefix}/test-data/applications.json`
+        );
+      }
+      return fetchStuff(`${process.env.serverPrefix}/api/applications`);
+    },
+    { staleTime: 1000, refetchOnWindowFocus: false }
   );
 
   if (
@@ -81,32 +101,45 @@ const App = () => {
           flex-wrap: wrap;
         `}
       >
-        {apps.map((app) => (
-          <Link href={`/${app}`} key={app}>
-            <li
-              css={css`
-                border: 1px solid black;
-                margin: 1rem;
-                padding: 1rem;
-              `}
-            >
-              <a href={`/${app}`}>{app}</a>
-            </li>
-          </Link>
-        ))}
+        {Array.isArray(apps) ? (
+          <ul
+            css={css`
+              list-style: none;
+              display: flex;
+              flex-wrap: wrap;
+            `}
+          >
+            {apps.map((app) => (
+              <li
+                key={app}
+                css={css`
+                  border: 1px solid black;
+                  margin: 1rem;
+                  padding: 1rem;
+                `}
+              >
+                <Link href={`/${app}`}>
+                  <a href={`/${app}`}>{app}</a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>Application list not found</div>
+        )}
       </ul>
-      ;
-      <Table
-        processed={getProcessed(data, hierarchy)}
-        hierarchy={hierarchy}
-        appName={appName}
-      />
+      <Table data={data} hierarchy={hierarchy} appName={appName} />
     </div>
   );
 };
 
 const Table = (props) => {
-  const { processed, hierarchy, appName } = props;
+  const { data, hierarchy, appName } = props;
+
+  const processed = useMemo(
+    () => getProcessed(data, hierarchy),
+    [data, hierarchy]
+  );
 
   const columns = useMemo(
     () => [
