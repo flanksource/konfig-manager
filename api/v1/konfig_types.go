@@ -27,6 +27,7 @@ type Output struct {
 	Namespace string `yaml:"namespace,omitempty" json:"namespace,omitempty"`
 	Kind      string `yaml:"kind,omitempty" json:"kind,omitempty"`
 	Type      string `yaml:"type,omitempty" json:"type,omitempty"`
+	FileType  string `yaml:"filetype,omitempty" json:"filetype,omitempty"`
 	Key       string `yaml:"key,omitempty" json:"key,omitempty"`
 }
 

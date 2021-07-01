@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strings"
+
 	konfigmanagerv1 "github.com/flanksource/konfig-manager/api/v1"
 	"github.com/flanksource/konfig-manager/pkg"
 	v1 "k8s.io/api/core/v1"
@@ -16,7 +18,7 @@ const (
 
 func (r *KonfigReconciler) createOutputObject(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) error {
 	properties := getProperties(output, config, resources)
-	if output.Kind == "ConfigMap" || output.Kind == "configmap" || output.Kind == "cm" {
+	if strings.ToLower(output.Kind) == "configmap" || strings.ToLower(output.Kind) == "cm" {
 		if err := r.Kommons.Apply(output.Namespace, getConfigMap(output.Name, output.Namespace, properties)); err != nil {
 			r.Log.Error(err, "error creating/updating configmap", output.Name, output.Namespace)
 			return err
@@ -24,7 +26,7 @@ func (r *KonfigReconciler) createOutputObject(output konfigmanagerv1.Output, con
 		r.Log.Info("created/updated configmap", output.Name, output.Namespace)
 		return nil
 	}
-	if output.Kind == "Secret" || output.Kind == "secret" {
+	if strings.ToLower(output.Kind) == "secret" {
 		propertiesWithBytes := make(map[string][]byte)
 		for key, value := range properties {
 			propertiesWithBytes[key] = []byte(value)
@@ -40,11 +42,16 @@ func (r *KonfigReconciler) createOutputObject(output konfigmanagerv1.Output, con
 
 func getProperties(output konfigmanagerv1.Output, config pkg.Config, resources []pkg.Resource) map[string]string {
 	properties := make(map[string]string)
-	if output.Type == "file" || output.Type == "File" {
+	if strings.ToLower(output.Type) == "file" {
 		if output.Key == "" {
 			output.Key = "application.properties"
 		}
-		properties[output.Key] = config.GeneratePropertiesFile(resources)
+		if output.FileType == "" || strings.ToLower(output.FileType) == "env" {
+			properties[output.Key] = config.GeneratePropertiesFile(resources)
+		}
+		if strings.ToLower(output.FileType) == "javascript" || strings.ToLower(output.FileType) == "js" {
+			properties[output.Key] = config.GenerateJsPropertiesFile(resources)
+		}
 	} else {
 		properties = config.GetPropertiesMap(resources)
 	}

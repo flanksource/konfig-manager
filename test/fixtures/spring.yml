@@ -18,5 +18,10 @@ metadata:
   namespace: default
 data:
   config-key: some-value
+  config-key-quotes: "some-other-value"
   spring.main.show_banner: "true"
+  undefined-string-key: "undefined"
   spring.datasource.maxActive: "40"
+  null-string-key: "null"
+  bool-string-key: "true"
+  int-string-key: "11"
