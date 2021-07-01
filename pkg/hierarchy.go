@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"sort"
+	"strconv"
 
 	"github.com/pkg/errors"
 
@@ -65,8 +66,7 @@ func (config Config) GetProperties(resources []Resource) map[string]Property {
 	return propertiesMap
 }
 
-func (config Config) GeneratePropertiesFile(resources []Resource) string {
-	var properties string
+func (config Config) getPropertiesBySection(resources []Resource) map[Item]Properties {
 	var bySection = make(map[Item]Properties)
 	for _, v := range config.GetProperties(resources) {
 		if _, ok := bySection[v.Resource.Hierarchy]; !ok {
@@ -74,6 +74,12 @@ func (config Config) GeneratePropertiesFile(resources []Resource) string {
 		}
 		bySection[v.Resource.Hierarchy] = append(bySection[v.Resource.Hierarchy], v)
 	}
+	return bySection
+}
+
+func (config Config) GeneratePropertiesFile(resources []Resource) string {
+	var properties string
+	var bySection = config.getPropertiesBySection(resources)
 
 	for _, item := range config.Hierarchy {
 		list := bySection[item]
@@ -84,6 +90,32 @@ func (config Config) GeneratePropertiesFile(resources []Resource) string {
 		properties += fmt.Sprintf("#\n# %s\n#\n", item.String())
 		for _, property := range list {
 			properties += fmt.Sprintf("%v=%v\n", property.Key, property.Value)
+		}
+	}
+
+	return properties
+}
+
+func (config Config) GenerateJsPropertiesFile(resources []Resource) string {
+	var properties string
+	var bySection = config.getPropertiesBySection(resources)
+	for _, item := range config.Hierarchy {
+		list := bySection[item]
+		sort.Sort(list)
+		if len(list) == 0 {
+			continue
+		}
+		properties += fmt.Sprintf("#\n# %s\n#\n", item.String())
+		for _, property := range list {
+			if _, err := strconv.Atoi(property.Value); err == nil {
+				properties += fmt.Sprintf("window['__%v__']=%v;\n", property.Key, property.Value)
+			} else if _, err := strconv.ParseBool(property.Value); err == nil {
+				properties += fmt.Sprintf("window['__%v__']=%v;\n", property.Key, property.Value)
+			} else if property.Value == "null" || property.Value == "undefined" {
+				properties += fmt.Sprintf("window['__%v__']=%v;\n", property.Key, property.Value)
+			} else {
+				properties += fmt.Sprintf("window['__%v__']=\"%v\";\n", property.Key, property.Value)
+			}
 		}
 	}
 

@@ -1,6 +1,8 @@
 package test
 
 import (
+	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/flanksource/konfig-manager/pkg"
@@ -20,8 +22,14 @@ var tests = map[string]testInput{
 		data:   "fixtures/spring.yml",
 		verifications: map[string]string{
 			"config-key":                  "some-value",
+			"config-key-quotes":           "some-other-value",
 			"spring.datasource.maxActive": "40",
+			"null-string-key":             "null",
+			"undefined-string-key":        "undefined",
+			"bool-string-key":             "true",
+			"int-string-key":              "11",
 		},
+		applications: []string{"spring"},
 	},
 	"testHierarchyMergeWithInputFile": {
 		config: "fixtures/spring-config.yml",
@@ -30,6 +38,7 @@ var tests = map[string]testInput{
 			"config-key":                  "some-value",
 			"spring.datasource.maxActive": "40",
 		},
+		applications: []string{"spring"},
 	},
 	"testReadFromConfigMapCreatedWithFile": {
 		config: "fixtures/fileProperties-config.yml",
@@ -39,6 +48,7 @@ var tests = map[string]testInput{
 			"new-key":                               "diff-value",
 			"logging.level.org.springframework.web": "INFO",
 		},
+		applications: []string{"spring"},
 	},
 	"testSecretValues": {
 		config: "fixtures/secret-config.yml",
@@ -47,6 +57,7 @@ var tests = map[string]testInput{
 			"secret-key":                            "some-value",
 			"logging.level.org.springframework.web": "INFO",
 		},
+		applications: []string{"spring"},
 	},
 	"testMultipleApplications": {
 		config: "fixtures/multi-application-config.yml",
@@ -56,7 +67,53 @@ var tests = map[string]testInput{
 			"secret-key": "some-value",
 			"new-key":    "diff-value",
 		},
+		applications: []string{"spring", "quarkus"},
 	},
+}
+
+func TestGenerateJs(t *testing.T) {
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			resources, err := pkg.ReadResources(test.data)
+			if err != nil {
+				t.Error(err)
+			}
+
+			for _, name := range test.applications {
+				hierarchy, err := pkg.GetHierarchy(test.config, name)
+				if err != nil {
+					t.Error(err)
+				}
+
+				file := hierarchy.GenerateJsPropertiesFile(resources)
+
+				p := properties.MustLoadString(file)
+				// check property key and values
+
+				for key, value := range test.verifications {
+					var transformedValue string
+					if _, err := strconv.Atoi(value); err == nil {
+						transformedValue = fmt.Sprintf("%v;", value)
+					} else if _, err := strconv.ParseBool(value); err == nil {
+						transformedValue = fmt.Sprintf("%v;", value)
+					} else if value == "null" || value == "undefined" {
+						transformedValue = fmt.Sprintf("%v;", value)
+					} else {
+						transformedValue = fmt.Sprintf("\"%v\";", value)
+					}
+
+					transformedKey := fmt.Sprintf("window['__%v__']", key)
+					propVal, exists := p.Get(transformedKey)
+					if !exists {
+						t.Errorf("property not found: %s", key)
+					}
+					if propVal != transformedValue {
+						t.Errorf("%s: expected %s got %s", key, propVal, transformedValue)
+					}
+				}
+			}
+		})
+	}
 }
 
 func TestGenerate(t *testing.T) {
