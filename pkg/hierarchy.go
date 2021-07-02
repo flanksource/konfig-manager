@@ -105,7 +105,7 @@ func (config Config) GenerateJsPropertiesFile(resources []Resource) string {
 		if len(list) == 0 {
 			continue
 		}
-		properties += fmt.Sprintf("#\n# %s\n#\n", item.String())
+		properties += fmt.Sprintf("//\n// %s\n//\n", item.String())
 		for _, property := range list {
 			if _, err := strconv.Atoi(property.Value); err == nil {
 				properties += fmt.Sprintf("window['__%v__']=%v;\n", property.Key, property.Value)
