@@ -93,7 +93,10 @@ func (r *KonfigReconciler) getResources(config pkg.Config) ([]pkg.Resource, erro
 		if err != nil {
 			return nil, err
 		}
-		resources = append(resources, pkg.Resource{Item: obj})
+		if obj != nil {
+			resources = append(resources, pkg.Resource{Item: obj})
+		}
+
 	}
 	return resources, nil
 }

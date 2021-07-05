@@ -39,7 +39,7 @@ func (item Item) String() string {
 
 func (item Item) FindIn(resources []Resource) *Resource {
 	for _, resource := range resources {
-		if resource.Item.GetKind() == item.Kind &&
+		if resource.Item != nil && resource.Item.GetKind() == item.Kind &&
 			resource.Item.GetName() == item.Name &&
 			(item.Namespace == "" || item.Namespace == resource.Item.GetNamespace()) {
 			return &resource
