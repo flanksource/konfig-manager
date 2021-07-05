@@ -39,7 +39,7 @@ func (item Item) String() string {
 
 func (item Item) FindIn(resources []Resource) *Resource {
 	for _, resource := range resources {
-		if resource.Item.GetKind() == item.Kind &&
+		if resource.Item != nil && resource.Item.GetKind() == item.Kind &&
 			resource.Item.GetName() == item.Name &&
 			(item.Namespace == "" || item.Namespace == resource.Item.GetNamespace()) {
 			return &resource
@@ -105,7 +105,7 @@ func (config Config) GenerateJsPropertiesFile(resources []Resource) string {
 		if len(list) == 0 {
 			continue
 		}
-		properties += fmt.Sprintf("#\n# %s\n#\n", item.String())
+		properties += fmt.Sprintf("//\n// %s\n//\n", item.String())
 		for _, property := range list {
 			if _, err := strconv.Atoi(property.Value); err == nil {
 				properties += fmt.Sprintf("window['__%v__']=%v;\n", property.Key, property.Value)

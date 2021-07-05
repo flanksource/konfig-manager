@@ -79,6 +79,9 @@ func TestGenerateJs(t *testing.T) {
 				t.Error(err)
 			}
 
+			// Adding an empty resource tests the ability of the function to exclude them without panicking.
+			resources = append([]pkg.Resource{pkg.Resource{}}, resources...)
+
 			for _, name := range test.applications {
 				hierarchy, err := pkg.GetHierarchy(test.config, name)
 				if err != nil {
@@ -124,12 +127,14 @@ func TestGenerate(t *testing.T) {
 				t.Error(err)
 			}
 
+			// Adding an empty resource tests the ability of the function to exclude them without panicking.
+			resources = append([]pkg.Resource{pkg.Resource{}}, resources...)
+
 			for _, name := range test.applications {
 				hierarchy, err := pkg.GetHierarchy(test.config, name)
 				if err != nil {
 					t.Error(err)
 				}
-
 				file := hierarchy.GeneratePropertiesFile(resources)
 
 				p := properties.MustLoadString(file)
