@@ -19,6 +19,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -30,7 +31,7 @@ import (
 )
 
 var (
-	input, output, outputType, configFile string
+	input, output, outputType, outputFileType, configFile string
 )
 
 // GenerateCmd represents the base command when called without any subcommands
@@ -64,7 +65,14 @@ var GenerateCmd = &cobra.Command{
 				return err
 			}
 
-			file := hierarchy.GeneratePropertiesFile(resources)
+			var file string
+			if strings.ToLower(outputFileType) == "" || strings.ToLower(outputFileType) == "env" {
+				file = hierarchy.GeneratePropertiesFile(resources)
+			}
+			if strings.ToLower(outputFileType) == "js" || strings.ToLower(outputFileType) == "javascript" {
+				file = hierarchy.GenerateJsPropertiesFile(resources)
+			}
+
 			if outputType == "stdout" {
 				fmt.Println(file)
 			} else {
@@ -89,6 +97,8 @@ var GenerateCmd = &cobra.Command{
 func init() {
 	GenerateCmd.Flags().StringVarP(&input, "input", "i", "-", "input of yaml dump (default '-' is stdin)")
 	GenerateCmd.Flags().StringVarP(&configFile, "config", "c", "config.yml", "path to config file containing hierarchy")
-	GenerateCmd.Flags().StringVarP(&outputType, "output-type", "", "stdout", "type of output: can be one of stdout, properties")
+	GenerateCmd.Flags().StringVarP(&outputType, "output-type", "", "stdout", "type of output: can be one of 'stdout', 'file'")
+	GenerateCmd.Flags().StringVarP(&outputFileType, "output-filetype", "", "env", "when output is a file: can be one of 'env', 'js/javascript'")
 	GenerateCmd.Flags().StringVarP(&output, "output-path", "", "properties/{{.name}}.properties", "output path")
+
 }
