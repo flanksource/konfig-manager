@@ -4,7 +4,7 @@ metadata:
   labels:
     control-plane: konfig-manager
   name: konfig-manager-metrics-service
-  namespace: system
+  namespace: konfig-manager
 spec:
   ports:
   - name: https

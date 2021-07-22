@@ -1,5 +1,5 @@
 # Adds namespace to all resources.
-namespace: platform-system
+namespace: konfig-manager
 
 
 # Labels to add to all resources and selectors.

@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: konfig-manager
-  namespace: system
+  namespace: konfig-manager
