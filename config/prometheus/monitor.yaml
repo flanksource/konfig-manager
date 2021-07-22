@@ -6,7 +6,7 @@ metadata:
   labels:
     control-plane: konfig-manager
   name: konfig-manager-metrics-monitor
-  namespace: system
+  namespace: konfig-manager
 spec:
   endpoints:
     - path: /metrics

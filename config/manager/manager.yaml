@@ -3,13 +3,13 @@ kind: Namespace
 metadata:
   labels:
     control-plane: konfig-manager
-  name: system
+  name: konfig-manager
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: konfig-manager
-  namespace: system
+  namespace: konfig-manager
   labels:
     control-plane: konfig-manager
 spec:

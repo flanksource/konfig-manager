@@ -6,14 +6,16 @@ plugins:
         - { type: chore, release: patch }
         - { type: refactor, release: patch }
         - { type: feat, release: minor }
-        - { type: ci, release: false }
-        - { type: style, release: false }
+        - { type: ci, release: patch }
+        - { type: style, release: patch }
       parserOpts:
         noteKeywords:
           - MAJOR RELEASE
   - "@semantic-release/release-notes-generator"
   - - "@semantic-release/github"
     - assets:
+      - path: ./config/default/operator.yml
+        name: operator.yml
       - path: ./.bin/konfig-manager_linux-amd64
         name: konfig-manager_linux-amd64
       - path: ./.bin/konfig-manager_linux-arm64
