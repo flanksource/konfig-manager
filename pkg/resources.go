@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/flanksource/commons/logger"
+
 	"github.com/flanksource/kommons/kustomize"
 	"github.com/hairyhenderson/gomplate/v3/base64"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -77,11 +79,16 @@ func (r Resource) GetPropertiesMap() map[string]string {
 func (r Resource) GeneratePropertesMapFromProperties() map[string]string {
 	var propertiesMap = make(map[string]string)
 	var prop string
+	value := r.Item.Object["data"].(map[string]interface{})[r.Hierarchy.Key]
+	if value == nil {
+		logger.Debugf("can not find the given key: %v in the %v: %v", r.Hierarchy.Key, r.Item.GetKind(), r.Item.GetName())
+		return nil
+	}
 	if r.Item.GetKind() == "Secret" {
-		val, _ := base64.Decode(r.Item.Object["data"].(map[string]interface{})[r.Hierarchy.Key].(string))
+		val, _ := base64.Decode(value.(string))
 		prop = string(val)
 	} else {
-		prop = r.Item.Object["data"].(map[string]interface{})[r.Hierarchy.Key].(string)
+		prop = value.(string)
 	}
 	for _, keyValue := range strings.Split(prop, "\n") {
 		propKeyValue := strings.Split(keyValue, "=")
