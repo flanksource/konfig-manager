@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -93,7 +94,7 @@ func (config Config) GeneratePropertiesFile(resources []Resource) string {
 		}
 	}
 
-	return properties
+	return strings.TrimSpace(properties)
 }
 
 func (config Config) GenerateJsPropertiesFile(resources []Resource) string {
