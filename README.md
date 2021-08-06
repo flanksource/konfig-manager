@@ -5,7 +5,7 @@ konfig-manager is tool for managing configuration for services with many differe
 ## Installation
 
 ```bash
-kubectl apply -f https://github.com/flanksource/konfig-manager/releases/download/v0.10.0/operator.yml
+kubectl apply -f https://github.com/flanksource/konfig-manager/releases/latest/download/operator.yml
 ```
 
 ## Tools
