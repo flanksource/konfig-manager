@@ -4,7 +4,8 @@ go 1.16
 
 require (
 	github.com/flanksource/commons v1.5.6
-	github.com/flanksource/kommons v0.18.0
+	github.com/flanksource/kommons v0.21.2
+	github.com/flanksource/kommons/testenv v0.0.0-20210806074320-31a8cc0ed23b
 	github.com/go-logr/logr v0.3.0
 	github.com/hairyhenderson/gomplate/v3 v3.6.0
 	github.com/magiconair/properties v1.8.1

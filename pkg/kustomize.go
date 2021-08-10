@@ -42,16 +42,35 @@ func ReadConfiguration(repos []string, branches []string, hierarchy Config) []ma
 func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map[string]KustomizeResources {
 	var data = make(map[string]KustomizeResources)
 	dir, _ := ioutil.TempDir("/tmp", rand.String(5))
-	err := exec.Exec(fmt.Sprintf("git clone %v %v", repo, dir))
+	workingDirectory, err := os.Getwd()
+	if err != nil {
+		logger.Fatalf("error getting working directory: %v", err)
+		return nil
+	}
+	err = exec.Exec(fmt.Sprintf("git clone %v %v", repo, dir))
+
 	if err != nil {
 		logger.Fatalf("error cloning repo %v in temp dir %v", repo, dir)
 		return nil
 	}
 	logger.Debugf("successfully cloned the repo %v", repo)
+
+	if err != nil {
+		logger.Fatalf("error getting working directory: %v", err)
+		return nil
+	}
+
 	if err := os.Chdir(dir); err != nil {
 		logger.Fatalf("error changing context dir %v", dir)
 		return nil
 	}
+
+	defer func() {
+		if err := os.Chdir(workingDirectory); err != nil {
+			logger.Fatalf("error changing context dir %v", workingDirectory)
+		}
+	}()
+
 	logger.Debugf("changed context dir to %v", dir)
 	for _, branch := range branches {
 		var resourceList []KustomizeResources
@@ -60,7 +79,11 @@ func parseRepoWithBranches(repo string, branches []string, hierarchy Config) map
 			return nil
 		}
 		if err := filepath.Walk(".",
-			func(filePath string, info os.FileInfo, err error) error {
+			func(
+				filePath string,
+				info os.FileInfo,
+				err error,
+			) error {
 				if err != nil {
 					return err
 				}
