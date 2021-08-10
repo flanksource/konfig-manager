@@ -100,5 +100,4 @@ func init() {
 	GenerateCmd.Flags().StringVarP(&outputType, "output-type", "", "stdout", "type of output: can be one of 'stdout', 'file'")
 	GenerateCmd.Flags().StringVarP(&outputFileType, "output-filetype", "", "env", "when output is a file: can be one of 'env', 'js/javascript'")
 	GenerateCmd.Flags().StringVarP(&output, "output-path", "", "properties/{{.name}}.properties", "output path")
-
 }

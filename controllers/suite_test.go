@@ -21,7 +21,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/flanksource/kommons"
+	"github.com/flanksource/kommons/testenv"
+
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	. "github.com/onsi/ginkgo"
@@ -64,7 +65,7 @@ var _ = BeforeSuite(func() {
 		ErrorIfCRDPathMissing: true,
 	}
 
-	cfg, binDir, err = kommons.StartTestEnv("1.19.2")
+	cfg, binDir, err = testenv.StartTestEnv("1.19.2")
 	Expect(err).NotTo(HaveOccurred())
 	Expect(cfg).NotTo(BeNil())
 
